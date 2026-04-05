@@ -1,0 +1,16 @@
+{
+  "name": "case-intelligence-core",
+  "version": "1.0.0",
+  "description": "Reality first interpretation engine",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test:demo": "tsx src/dev/runCaseRealityPipeline.demo.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "tsx": "^4.0.0",
+    "@types/node": "^20.0.0"
+  }
+}

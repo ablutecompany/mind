@@ -1,0 +1,107 @@
+{
+  "timestamp": "2026-04-05T23:25:36.908Z",
+  "status": "PASS",
+  "summary": [
+    {
+      "id": "A_FINANCAS",
+      "dominantDomain": "financas_margem",
+      "dominantProblem": "Conflito centrado em falta_de_margem_esmagadora",
+      "topBlockers": [
+        "imobilidade_financeira_pratica"
+      ],
+      "openingLine": "O que mais pesa aqui parece estar centrado em: a falta de margem financeira real.",
+      "recognitionLines": [
+        "O dinheiro aparece aqui menos como detalhe e mais como limite real à tua autonomia.",
+        "Parte do bloqueio parece estrutural e logístico: há falta de margem material para alterar a rotina.",
+        "O que te trava pode não ser falta de vontade. Pode ser falta de margem para mexer na vida."
+      ],
+      "confidence": "medium"
+    },
+    {
+      "id": "B_CASADA_AMA",
+      "dominantDomain": "relacao_vinculo_formal",
+      "dominantProblem": "Conflito centrado em vazio_e_distancia",
+      "topBlockers": [
+        "permanencia_por_estrutura"
+      ],
+      "openingLine": "O que mais pesa aqui parece estar centrado em: a estrutura da relação atual.",
+      "recognitionLines": [
+        "Há sinais de divisão entre a vida formal que continua e o centro emocional que parece já não coincidir por inteiro."
+      ],
+      "confidence": "medium"
+    },
+    {
+      "id": "C_ESPACO",
+      "dominantDomain": "habitacao_espaco_autonomia",
+      "dominantProblem": "Conflito centrado em falta_espaco_vida_suspensa",
+      "topBlockers": [
+        "nao_emancipacao_fisica"
+      ],
+      "openingLine": "O que mais pesa aqui parece estar centrado em: a questão da casa e do espaço próprio.",
+      "recognitionLines": [
+        "A ausência de espaço afeta diretamente o teu sentido de independência funcional.",
+        "A questão da casa pode estar a pesar menos como conforto e mais como condição de vida adulta.",
+        "A questão de não teres a tua própria porta agrava o desgaste dos teus dias.",
+        "Aquilo que mais pesa pode não ser apenas o presente difícil; pode ser a sensação de vida adiada."
+      ],
+      "confidence": "medium"
+    },
+    {
+      "id": "D_TRABALHO",
+      "dominantDomain": "trabalho_desgaste_reconhecimento",
+      "dominantProblem": "Conflito centrado em erosao_diaria_pura",
+      "topBlockers": [
+        "dependencia_salarial_para_sobreviver"
+      ],
+      "openingLine": "O que mais pesa aqui parece estar centrado em: o desgaste no trabalho e a inércia local.",
+      "recognitionLines": [],
+      "confidence": "medium"
+    },
+    {
+      "id": "E_FAMILIA",
+      "dominantDomain": "familia_lealdade_papel",
+      "dominantProblem": "Conflito base latente",
+      "topBlockers": [
+        "papel_exigido_hereditario"
+      ],
+      "openingLine": "O que mais pesa aqui parece estar centrado em: o peso das lealdades familiares.",
+      "recognitionLines": [],
+      "confidence": "medium"
+    },
+    {
+      "id": "F_FUTURO",
+      "dominantDomain": "futuro_vida_adiada",
+      "dominantProblem": "Conflito centrado em sensacao_de_atraso_cronico",
+      "topBlockers": [
+        "ausencia_de_passo_adulto"
+      ],
+      "openingLine": "O que mais pesa aqui parece estar centrado em: a sensação de adiamento prático da vida.",
+      "recognitionLines": [
+        "Aquilo que mais pesa pode não ser apenas o presente difícil; pode ser a sensação de vida adiada.",
+        "O bloqueio aqui parece menos pontual e mais estrutural.",
+        "A paralisia resulta num congelamento prático que impede que arranques decisões com impacto visível."
+      ],
+      "confidence": "medium"
+    }
+  ],
+  "overlapMetrics": {
+    "A_vs_B": {
+      "insightOverlapScore": 0.11538461538461539,
+      "openingParagraphOverlap": 0.4166666666666667,
+      "recognitionLineOverlap": 0,
+      "questionPathOverlap": 0
+    },
+    "A_vs_C": {
+      "insightOverlapScore": 0.2916666666666667,
+      "openingParagraphOverlap": 0.38461538461538464,
+      "recognitionLineOverlap": 0,
+      "questionPathOverlap": 0.09090909090909091
+    },
+    "B_vs_C": {
+      "insightOverlapScore": 0.1111111111111111,
+      "openingParagraphOverlap": 0.4166666666666667,
+      "recognitionLineOverlap": 0,
+      "questionPathOverlap": 0
+    }
+  }
+}
