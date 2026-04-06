@@ -82,8 +82,16 @@ body {
 }
 
 .option-btn:hover {
-  background-color: #21262d;
-  border-color: #8b949e;
+  background-color: var(--card-bg);
+  transform: translateY(-2px);
+}
+
+.option-btn.selected {
+  background-color: var(--accent);
+  color: var(--text-dark);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(210, 153, 34, 0.4);
 }
 
 .progress-bar-container {

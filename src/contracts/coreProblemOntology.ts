@@ -1,5 +1,12 @@
 // src/contracts/coreProblemOntology.ts
 export type CoreProblemId = 
+  | 'meios'
+  | 'apoio'
+  | 'liberdade'
+  | 'energia'
+  | 'direcao'
+  | 'vida'
+  | 'baixa_diferenciacao'
   | 'medo'
   | 'ansiedade'
   | 'solidao'
@@ -26,6 +33,13 @@ export interface CoreProblemDefinition {
 }
 
 export const CORE_PROBLEM_ONTOLOGY: Record<CoreProblemId, CoreProblemDefinition> = {
+  meios: { id: 'meios', label: 'Meios / Margem Material', derivatives: [], visibleSignals: [], rivalIds: [], questionFamilies: [] },
+  apoio: { id: 'apoio', label: 'Apoio / Estrutura Afetiva', derivatives: [], visibleSignals: [], rivalIds: [], questionFamilies: [] },
+  liberdade: { id: 'liberdade', label: 'Liberdade / Autonomia', derivatives: [], visibleSignals: [], rivalIds: [], questionFamilies: [] },
+  energia: { id: 'energia', label: 'Energia / Desgaste', derivatives: [], visibleSignals: [], rivalIds: [], questionFamilies: [] },
+  direcao: { id: 'direcao', label: 'Direção / Rumo', derivatives: [], visibleSignals: [], rivalIds: [], questionFamilies: [] },
+  vida: { id: 'vida', label: 'Vida / Presença', derivatives: [], visibleSignals: [], rivalIds: [], questionFamilies: [] },
+  baixa_diferenciacao: { id: 'baixa_diferenciacao', label: 'Baixa Diferenciação / Névoa', derivatives: [], visibleSignals: [], rivalIds: [], questionFamilies: [] },
   medo: {
     id: 'medo',
     label: 'Medo',

@@ -1,45 +1,8 @@
 // public/app.js
-
-// Hardcoded Demo Questions based on surveyOptionEvidenceDictionary.ts
-const DEMO_QUESTIONS = [
-  {
-    id: "q1",
-    blockId: "superficial",
-    text: "Quando pensas no que te está a travar, sentes mais:",
-    options: [
-      { id: "opt_A1_meios", text: "Falta de meios" },
-      { id: "opt_A1_apoio", text: "Falta de apoio, ligação ou estrutura afetiva" },
-      { id: "opt_A1_liberdade", text: "Falta de liberdade" },
-      { id: "opt_A1_energia", text: "Falta de energia" },
-      { id: "opt_A1_direcao", text: "Falta de direção" },
-      { id: "opt_A1_vida", text: "Falta de vida" },
-      { id: "opt_A1_none", text: "Não consigo identificar bem" }
-    ]
-  },
-  {
-    id: "q2",
-    blockId: "symbolic",
-    text: "Onde sentes o maior atrito no teu dia-a-dia?",
-    options: [
-      { id: "opt_B1_casa_sufoco", text: "Em casa, sinto que perco o controlo do meu espaço." },
-      { id: "opt_B2_trabalho_identidade", text: "No trabalho, a minha identidade parece fundir-se com o que produzo." },
-      { id: "opt_B3_rotina_apagada", text: "Na rotina. Sinto a vida a passar repetitivamente." }
-    ]
-  },
-  {
-    id: "q3",
-    blockId: "deepening",
-    text: "Quando ages, o que é que genuinamente te move no fundo?",
-    options: [
-      { id: "opt_D1_evita_critica", text: "Acima de tudo, evitar ser criticado e falhar publicamente." },
-      { id: "opt_D3_precisa_agradar", text: "Garantir que as pessoas importantes ficam contentes comigo." },
-      { id: "opt_D4_auto_valor_ferido", text: "A necessidade secreta de provar que tenho valor." }
-    ]
-  }
-];
-
 let currentStep = 0;
 let surveyAnswers = []; // holds objects: { blockId, answers: [{ questionId, selectedOptionId }] }
+let currentQuestionSelections = new Set();
+let testerFeedback = []; // Holds the feedback issues
 
 const screens = {
   landing: document.getElementById('landing-screen'),
@@ -57,46 +20,140 @@ function activateScreen(screenEl) {
 document.getElementById('start-btn').addEventListener('click', () => {
   currentStep = 0;
   surveyAnswers = [];
+  testerFeedback = [];
+  currentQuestionSelections.clear();
   loadQuestion();
   activateScreen(screens.question);
 });
 
 // 2. Load Question View
 function loadQuestion() {
-  if (currentStep >= DEMO_QUESTIONS.length) {
+  if (currentStep >= SURVEY_QUESTIONS.length) {
     submitEvaluation();
     return;
   }
 
-  const q = DEMO_QUESTIONS[currentStep];
+  const q = SURVEY_QUESTIONS[currentStep];
   document.getElementById('question-text').innerText = q.text;
+
+  let maxText = q.maxSelections > 1 ? `(Escolhe até ${q.maxSelections} opções)` : `(Escolhe apenas 1 opção)`;
+  document.getElementById('question-instruction').innerText = `Bloco: ${SURVEY_BLOCKS[q.blockId].title} - ${maxText}`;
   
   // Progress Bar
-  const progressPerc = ((currentStep) / DEMO_QUESTIONS.length) * 100;
+  const progressPerc = ((currentStep) / SURVEY_QUESTIONS.length) * 100;
   document.getElementById('progress-bar').style.width = progressPerc + '%';
+
+  // Navigation Logic
+  document.getElementById('back-btn').style.display = currentStep > 0 ? 'block' : 'none';
+
+  // Next Btn state
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.display = 'block';
+  nextBtn.disabled = true; // wait for selection
+
+  // Restore previous answers if we walked backward
+  currentQuestionSelections.clear();
+  const existingBlockObj = surveyAnswers.find(s => s.blockId === q.blockId);
+  if (existingBlockObj) {
+      const answersForThisQ = existingBlockObj.answers.filter(a => a.questionId === q.id);
+      answersForThisQ.forEach(a => currentQuestionSelections.add(a.selectedOptionId));
+  }
+
+  if(currentQuestionSelections.size > 0) nextBtn.disabled = false;
 
   const container = document.getElementById('options-container');
   container.innerHTML = ''; // clear previous
 
   q.options.forEach(opt => {
     const btn = document.createElement('button');
-    btn.className = 'option-btn';
+    btn.className = currentQuestionSelections.has(opt.id) ? 'option-btn selected' : 'option-btn';
     btn.innerText = opt.text;
-    btn.onclick = () => handleAnswerOption(q.blockId, q.id, opt.id);
+    btn.onclick = () => handleToggleOption(q, opt.id, btn);
     container.appendChild(btn);
   });
+
+  document.getElementById('feedback-drawer').classList.add('hidden');
 }
 
-function handleAnswerOption(blockId, questionId, selectedOptionId) {
-  // Save answer matching the required Array structure in API
-  surveyAnswers.push({
-    blockId,
-    answers: [{ questionId, selectedOptionId }]
-  });
+function handleToggleOption(question, optId, btnEl) {
+    if (currentQuestionSelections.has(optId)) {
+        currentQuestionSelections.delete(optId);
+        btnEl.classList.remove('selected');
+    } else {
+        if (currentQuestionSelections.size >= question.maxSelections) {
+            // Se as selecções estão maxed e é de selecção única, faz toggle (substitui)
+            if (question.maxSelections === 1) {
+                currentQuestionSelections.clear();
+                document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                currentQuestionSelections.add(optId);
+                btnEl.classList.add('selected');
+            } else {
+                return; // Max reached
+            }
+        } else {
+            currentQuestionSelections.add(optId);
+            btnEl.classList.add('selected');
+        }
+    }
 
-  currentStep++;
-  loadQuestion();
+    document.getElementById('next-btn').disabled = currentQuestionSelections.size === 0;
 }
+
+document.getElementById('next-btn').addEventListener('click', () => {
+    const q = SURVEY_QUESTIONS[currentStep];
+    
+    // Find or construct Block Object
+    let blockObj = surveyAnswers.find(s => s.blockId === q.blockId);
+    if (!blockObj) {
+        blockObj = { blockId: q.blockId, answers: [] };
+        surveyAnswers.push(blockObj);
+    }
+    
+    // Destrói as da Q atual e reescreve
+    blockObj.answers = blockObj.answers.filter(a => a.questionId !== q.id);
+    currentQuestionSelections.forEach(optId => {
+        blockObj.answers.push({ questionId: q.id, selectedOptionId: optId });
+    });
+
+    currentStep++;
+    loadQuestion();
+});
+
+document.getElementById('back-btn').addEventListener('click', () => {
+    if (currentStep > 0) {
+        currentStep--;
+        loadQuestion();
+    }
+});
+
+// Feedback Logic
+document.getElementById('feedback-btn').addEventListener('click', () => {
+    document.getElementById('feedback-drawer').classList.toggle('hidden');
+});
+
+document.getElementById('cancel-feedback-btn').addEventListener('click', () => {
+    document.getElementById('feedback-drawer').classList.add('hidden');
+});
+
+document.getElementById('save-feedback-btn').addEventListener('click', () => {
+    const q = SURVEY_QUESTIONS[currentStep];
+    const issueType = document.getElementById('issue-type').value;
+    const comment = document.getElementById('issue-comment').value;
+
+    testerFeedback.push({
+        timestamp: new Date().toISOString(),
+        blockId: q.blockId,
+        questionId: q.id,
+        questionText: q.text,
+        issueType,
+        comment,
+        currentSelections: Array.from(currentQuestionSelections)
+    });
+
+    alert("Feedback guardado!");
+    document.getElementById('feedback-drawer').classList.add('hidden');
+    document.getElementById('issue-comment').value = '';
+});
 
 // 3. Submit Evaluation to Vercel Local Node
 async function submitEvaluation() {
@@ -109,22 +166,10 @@ async function submitEvaluation() {
   };
 
   console.log("[Demo Frontend] A enviar POST /api/evaluate com Payload:", payload);
-
-  // MODO DE TESTE LOCAL (FALLBACK)
-  const isTestMode = true; // Forçar modo de fallback de segurança
-
   try {
-    if (isTestMode) {
-      throw new Error("Modo de Teste Forçado (Gateway desativado)");
-    }
-
-    const totalGivenAnswers = payload.surveyBlocks.reduce((acc, block) => acc + block.answers.length, 0);
-
     const response = await fetch('/api/evaluate', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
 
@@ -134,74 +179,55 @@ async function submitEvaluation() {
 
     const data = await response.json();
     console.log("[Demo Frontend] Resposta Recebida:", data);
-    renderResults(data, totalGivenAnswers);
+    renderResults(data);
   } catch (error) {
-    console.warn("⚠️ Fallback Local Engine ativado:", error.message);
-    
-    // Fallback local determinístico simplificado E prudente!
-    const q1Ans = surveyAnswers.find(b => b.blockId === 'superficial')?.answers[0].selectedOptionId;
-    
-    let mockResult = {
-      inference: {
-        headline: "Leitura Inicial (Fallback Local)", 
-        subHeadline: "O ambiente de teste calculou um eixo de forma simplificada e provisória.",
-        isLowConfidence: true,
-        ambiguityDisclaimer: "GRAU DE CONFIANÇA BAIXO: Amostragem insuficiente de dados.",
-        dynamicBands: [
-          { label: "Hipótese de Partida", value: "A aguardar volume de respostas", type: "core" }
-        ]
-      },
-      intervention: {
-        previewReading: "[Modo Local] Faltam perguntas para consolidar um retrato exato.",
-        previewPriority: "Foco Sugerido na Amostragem",
-        previewAction: "Nenhuma ação dura deve ser desenhada com 3 perguntas.",
-        hasMoreLocked: true
-      }
-    };
-
-    if (q1Ans === 'opt_A1_meios') {
-       mockResult.inference.headline = "Eixo Possivelmente Ativo: Meios";
-       mockResult.inference.dynamicBands = [{ label: "Suspeita Dominante", value: "Condicionamento Material", type: "core" }];
-    } else if (q1Ans === 'opt_A1_apoio') {
-       mockResult.inference.headline = "Eixo Possivelmente Ativo: Apoio";
-       mockResult.inference.dynamicBands = [{ label: "Suspeita Dominante", value: "Falta de Base Afetiva", type: "core" }];
-    } else if (q1Ans === 'opt_A1_liberdade') {
-       mockResult.inference.headline = "Eixo Possivelmente Ativo: Liberdade";
-       mockResult.inference.dynamicBands = [{ label: "Suspeita Dominante", value: "Aprisionamento ou Dever", type: "core" }];
-    }
-
-    // Passamos o totalAnswers para renderResults aplicar máscaras também se necessário
-    const totalGivenAnswers = surveyAnswers.reduce((acc, block) => acc + block.answers.length, 0);
-    renderResults(mockResult, totalGivenAnswers);
+    console.error("Erro Crítico da API:", error);
+    alert("Falhou o envio para o motor. Verifica os logs ou tenta com o Fallback Ativado.");
   }
 }
 
-// 4. Render Engine Output
-function renderResults(data, answersCount) {
+// 4. Render Engine Output com NIVEIS de PRUDENCIA
+function renderResults(data) {
   const inf = data.inference;
   const int = data.intervention;
 
-  // Lógica de Thresholds (Prudência Inferencial Frontend)
-  // Nível 1: Triagem Inicial (<= 3 questões)
-  // Nível 2: Leitura Intermédia (<= 10 questões)
-  // Nível 3: Leitura Forte (> 10 questões convergentes)
-  const isLevel1 = answersCount <= 3;
-  const isLevel2 = answersCount > 3 && answersCount <= 10;
+  // Determinar GATING POR BLOCOS CONCLUÍDOS e COBERTURA (Regra BLOCO A)
+  const blocksAnsweredKeys = surveyAnswers.map(s => s.blockId);
+  
+  let gateLevel = 1; // "Nível 1 - Triagem Inicial"
+  
+  if (blocksAnsweredKeys.includes('block_1') && !blocksAnsweredKeys.includes('block_2')) {
+      gateLevel = 1; 
+  } else if (blocksAnsweredKeys.includes('block_1') && blocksAnsweredKeys.includes('block_2')) {
+      gateLevel = 2; // "Leitura Intermédia"
+  }
+  if (blocksAnsweredKeys.includes('block_1') && blocksAnsweredKeys.includes('block_2') && blocksAnsweredKeys.includes('block_3')) {
+      gateLevel = 3; // "Leitura Robusta"
+  }
+  if (blocksAnsweredKeys.includes('block_1') && blocksAnsweredKeys.includes('block_2') && blocksAnsweredKeys.includes('block_3') && blocksAnsweredKeys.includes('block_4')) {
+      gateLevel = 4; // "Leitura Forte Final"
+  }
+  // Cobertura da Convergência a fazer re-downgrade caso a ambiguidade da rede (V2 Engine) seja enorme
+  if (inf.isLowConfidence && gateLevel > 2) gateLevel--;
 
-  // Masking para Nível 1 e 2 - Nunca afirmar fechado!
   let displayHeadline = inf.headline;
   let displaySubHeadline = inf.subHeadline;
   let displayBands = inf.dynamicBands;
   let displayPriorities = int.previewPriority;
 
-  if (isLevel1) {
+  if (gateLevel === 1) {
     displayHeadline = "Hipótese Provisória (Nível 1)";
-    displaySubHeadline = "Baseado numa triagem curta. " + (inf.headline ? `O eixo possivelmente mais ativo aponta para dinâmicas de ${inf.headline.toLowerCase()}.` : 'Sinal dominante em validação.');
-    displayBands = displayBands.map(b => ({...b, label: "Foco sob suspeita", type: "hipótese inicial"}));
-    displayPriorities = "Observação do Eixo";
-  } else if (isLevel2) {
+    displaySubHeadline = `Triagem curta incompleta. O sinal possivelmente mais ativo aponta para ${inf.headline}.`;
+    displayBands = displayBands.map(b => ({...b, label: "Foco sob suspeita - Não Verificado", type: "hipótese inicial"}));
+  } else if (gateLevel === 2) {
     displayHeadline = "Sinal Dominante em Validação (Nível 2)";
-    displaySubHeadline = `A aprofundar tensões: as primeiras relações apontam convergência em ${inf.headline}. A leitura está ainda incompleta.`;
+    displaySubHeadline = `Relações convergem provisoriamente em ${inf.headline}. Mapeamento incompleto.`;
+    displayBands = displayBands.map(b => ({...b, label: "Tensão Emergente", type: "leitura intermédia"}));
+  } else if (gateLevel === 3) {
+    displayHeadline = `Leitura Robusta: ${inf.headline}`;
+    displaySubHeadline = `Convergência real estabelecida: ${inf.subHeadline}`;
+  } else if (gateLevel >= 4) {
+    displayHeadline = `Núcleo Existencial: ${inf.headline}`; // Tudo solto - FULL POWER
   }
 
   document.getElementById('res-latent').innerText = displayHeadline;
@@ -214,13 +240,12 @@ function renderResults(data, answersCount) {
     const bandHTML = `
       <div class="dynamic-band">
         <p class="band-label">${band.type}: ${band.label}</p>
-        <p class="band-value">${band.value.replace(/_/g, ' ')}</p>
+        <p class="band-value" style="text-transform: capitalize;">${band.value.replace(/_/g, ' ')}</p>
       </div>
     `;
     bandsContainer.innerHTML += bandHTML;
   });
 
-  // Ambiguity Disclaimer Handler
   const ambiguityEl = document.getElementById('ambiguity-warning');
   if (inf.isLowConfidence && inf.ambiguityDisclaimer) {
     ambiguityEl.innerText = inf.ambiguityDisclaimer;
@@ -229,7 +254,6 @@ function renderResults(data, answersCount) {
     ambiguityEl.classList.add('hidden');
   }
 
-  // Intervention Teaser
   document.getElementById('preview-reading').innerText = int.previewReading;
   document.getElementById('preview-priority').innerText = int.previewPriority;
   document.getElementById('preview-action').innerText = int.previewAction;
@@ -237,7 +261,31 @@ function renderResults(data, answersCount) {
   activateScreen(screens.result);
 }
 
-// Handle Buy Action (Commercial barrier)
+// 5. Export Logic (BLOCO 4 - stateless download)
+document.getElementById('export-feedback-btn').addEventListener('click', () => {
+    if (testerFeedback.length === 0) {
+        alert("Não criaste nenhum registo de problema (nenhum clique no botão amarelo de report).");
+        return;
+    }
+    // Convert to CSV
+    const replacer = (key, value) => value === null ? '' : value;
+    const header = Object.keys(testerFeedback[0]);
+    const csv = [
+      header.join(','),
+      ...testerFeedback.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
+    ].join('\r\n');
+
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', 'mind-tester-feedback.csv');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+});
+
 document.getElementById('paywall-btn').addEventListener('click', () => {
-  alert("Esta é uma demo Web! Enviar hasPaid=true neste componente libertaria o 'fullPlan' object com roadmaps de 60 dias da Intervenção.");
+  alert("Num ambiente real, enviarias um Payload com `{hasPaid: true}` para o Motor V2 para extrair os Roadmaps Finais Guardados na Cloud.");
 });

@@ -22,11 +22,38 @@
     <div class="progress-bar-container">
       <div id="progress-bar" class="progress-bar"></div>
     </div>
+    
+    <!-- Novo Botão de Voltar -->
+    <div class="navigation-header" style="display:flex; justify-content:space-between; margin-bottom: 20px;">
+       <button id="back-btn" class="secondary-btn" style="display:none;">&larr; Voltar Anterior</button>
+       <button id="feedback-btn" class="ghost-btn">⚠ Reportar Problema</button>
+    </div>
+
+    <!-- Feedback Modal / Drawer (Inline for purity) -->
+    <div id="feedback-drawer" class="hidden" style="background:#21262d; padding: 16px; border-radius: 6px; margin-bottom: 2rem; border-left: 4px solid #d29922;">
+        <p style="font-size: 0.9rem; margin-top:0;">O que se passa com esta pergunta?</p>
+        <select id="issue-type" style="width:100%; padding: 8px; margin-bottom: 10px; background:#0d1117; color:#fff; border:1px solid #30363d;">
+            <option value="confusa">Pergunta confusa</option>
+            <option value="insuficiente">Opções insuficientes</option>
+            <option value="nao_representa">Nenhuma opção me representa</option>
+            <option value="ambiguidade">Ambiguidade</option>
+            <option value="tecnico">Problema técnico</option>
+            <option value="outro">Outro (especifique no comentário)</option>
+        </select>
+        <textarea id="issue-comment" rows="3" placeholder="Comentário livre (opcional)" style="width:100%; padding:8px; margin-bottom:10px; background:#0d1117; color:#fff; border:1px solid #30363d;"></textarea>
+        <div style="display:flex; gap:10px;">
+           <button id="save-feedback-btn" class="primary-btn" style="padding: 6px 12px; font-size:0.9rem; flex:1;">Gravar Report</button>
+           <button id="cancel-feedback-btn" class="secondary-btn" style="padding: 6px 12px; font-size:0.9rem;">Cancelar</button>
+        </div>
+    </div>
+
     <div class="content">
+      <p id="question-instruction" class="section-label" style="color:#8b949e;"></p>
       <h2 id="question-text" class="question-title">A carregar pergunta...</h2>
       <div id="options-container" class="options-grid">
         <!-- Options injected via JS -->
       </div>
+      <button id="next-btn" class="primary-btn mt-6" style="display:none;">Seguinte</button>
     </div>
   </section>
 
@@ -64,10 +91,14 @@
         </div>
       </div>
 
-      <button id="paywall-btn" class="primary-btn mt-6">Simular Barreira Comercial (Comprar Mapa)</button>
+      <!-- Download Feedback Button -->
+      <button id="export-feedback-btn" class="secondary-btn mt-4" style="width:100%;">Baixar Report de Teste (CSV)</button>
+
+      <button id="paywall-btn" class="primary-btn mt-6">Simular Barreira Comercial (hasPaid = true)</button>
     </div>
   </section>
 
+  <script src="/surveyQuestions.js"></script>
   <script src="/app.js"></script>
 </body>
 </html>
