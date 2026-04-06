@@ -290,10 +290,10 @@ document.getElementById('save-feedback-btn').addEventListener('click', () => {
     const issueType = document.getElementById('issue-type').value;
     const comment = document.getElementById('issue-comment').value;
 
-    const optionsShownStr = q.options.map(o => o.text).join(' | ');
+    const optionsShownStr = q.options.map(o => o.label).join(' | ');
     const selectedAnswersStr = Array.from(currentQuestionSelections).map(optId => {
-        const found = q.options.find(o => o.id === optId);
-        return found ? found.text : optId;
+        const found = q.options.find(o => o.optionId === optId);
+        return found ? found.label : optId;
     }).join(' | ');
 
     testerFeedback.push({
@@ -356,6 +356,8 @@ async function submitEvaluation() {
 function renderResults(data) {
   const inf = data.inference;
   const int = data.intervention;
+  
+  window.lastInferenceData = data;
 
   // Garantia absoluta de que "eixo dominante" e raw convergence não vazam tautologia
   const container = document.getElementById('narrative-container');
@@ -449,12 +451,14 @@ document.getElementById('export-feedback-btn').addEventListener('click', () => {
 });
 
 document.getElementById('paywall-btn').addEventListener('click', () => {
-  const isConfident = document.getElementById('res-latent').innerText.includes('Leitura Robusta') || 
-                      document.getElementById('res-latent').innerText.includes('Núcleo Existencial');
+  const inference = window.lastInferenceData?.inference;
+  if (!inference) return;
+  
+  const isConfident = inference.readingDepth >= 7;
   
   if (isConfident) {
-      alert("Acesso Autorizado ao Relatório de 60 Dias. A intervenção pode prosseguir porque a raiz psicológica está blindada.");
+      alert("Acesso ao relatório de 60 dias disponível.");
   } else {
-      alert("Relatório de 60 dias Bloqueado.\nO Centro ainda não está estabilizado. Apenas recebes sugestões iniciais e exercícios de clarificação. (Confidence < Boa)");
+      alert("O relatório de 60 dias ainda não está disponível. Para já, recebes apenas a leitura inicial e sugestões de clarificação.");
   }
 });

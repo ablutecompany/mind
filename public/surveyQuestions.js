@@ -67,16 +67,16 @@ const SURVEY_QUESTIONS = [
     questionId: "Q_V3_0201",
     blockId: "block_2",
     order: 3,
-    prompt: "Esta restrição atual faz-te sentir que perdeste o controlo sobre as tuas decisões estruturais, ou é uma limitação que ainda consegues gerir?",
-    helperText: "Avalia a diferença entre um problema e uma perda de dignidade ou autonomia.",
+    prompt: "Face a este problema, sentes que ainda consegues ditar as regras do teu dia a dia, ou perdeste de certa forma o controlo das tuas próprias decisões?",
+    helperText: "Avalia a tua autonomia atual.",
     inferentialPurpose: "Discriminação entre desconforto transitório e castração humilhante.",
     targetSignals: ["meios", "vida", "baixa_diferenciacao"],
     validationRole: "Teste de autonomia base",
     legacySourceIds: ["Q_DIS_FIN_02"],
     active: true,
     options: [
-      { optionId: "opt_0201_hum", label: "Perdi controlo real; sinto que engulo opções por dependência aos outros ou ao ordenado.", description: "", signalWeights: { meios: 1.5, vida: -0.5 }, signalTags: ["perda_dignidade"], disambiguatesWhat: ["peso_ontologico_material"], allowsBranchingTo: [] },
-      { optionId: "opt_0201_prat", label: "Apesar do desconforto ou privação, interiormente mantenho a minha independência e clareza.", description: "", signalWeights: { meios: 0.4 }, signalTags: ["independencia_mantida"], disambiguatesWhat: ["desconforto"], allowsBranchingTo: [] }
+      { optionId: "opt_0201_hum", label: "Sinto que engulo opções por dependência aos outros ou ao ordenado.", description: "", signalWeights: { meios: 1.5, vida: -0.5 }, signalTags: ["perda_dignidade"], disambiguatesWhat: ["peso_ontologico_material"], allowsBranchingTo: [] },
+      { optionId: "opt_0201_prat", label: "Apesar do sacrifício, as grandes decisões continuam a estar na minha mão.", description: "", signalWeights: { meios: 0.4 }, signalTags: ["independencia_mantida"], disambiguatesWhat: ["desconforto"], allowsBranchingTo: [] }
     ]
   },
   {
@@ -140,17 +140,17 @@ const SURVEY_QUESTIONS = [
     questionId: "Q_V3_0301",
     blockId: "block_3",
     order: 7,
-    prompt: "Como geres habitualmente a necessidade de mudar quando todas as vias parecem esgotadas?",
-    helperText: "Análise da tua estratégia de lidar face à estagnação severa.",
+    prompt: "Quando sentes que devias mudar de vida mas não sabes como, qual costuma ser a tua primeira defesa?",
+    helperText: "",
     inferentialPurpose: "Avaliação da resposta de coping (defesa do psiquismo).",
     targetSignals: ["energia", "direcao", "baixa_diferenciacao"],
     validationRole: "Gauge de inércia",
     legacySourceIds: ["Q_DIS_FAM_01"],
     active: true,
     options: [
-      { optionId: "opt_0301_distratores", label: "Acelero o ruído produtivo ou as distrações para evitar ouvir silêncios difíceis à noite.", description: "", signalWeights: { baixa_diferenciacao: 0.8 }, signalTags: ["coping_fuga"], disambiguatesWhat: [], allowsBranchingTo: [] },
-      { optionId: "opt_0301_justifica", label: "Uso obstáculos reais (filhos, falta de dinheiro) como a justificação absoluta que finaliza o assunto.", description: "", signalWeights: { energia: -0.5 }, signalTags: ["coping_racionalizacao"], disambiguatesWhat: [], allowsBranchingTo: [] },
-      { optionId: "opt_0301_isolamento", label: "Recolho-me e resigno-me; conservo apenas o mínimo de energia funcional possível.", description: "", signalWeights: { energia: 1.0, vida: -0.5 }, signalTags: ["coping_apatia"], disambiguatesWhat: [], allowsBranchingTo: [] }
+      { optionId: "opt_0301_distratores", label: "Encho-me de trabalho e distrações para não ter tempo para pensar à noite.", description: "", signalWeights: { baixa_diferenciacao: 0.8 }, signalTags: ["coping_fuga"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0301_justifica", label: "Foco-me intensamente nos obstáculos práticos (como o dinheiro ou a família) como justificação natural de inércia.", description: "", signalWeights: { energia: -0.5 }, signalTags: ["coping_racionalizacao"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0301_isolamento", label: "Simplesmente desligo. Faço apenas o mínimo obrigatório e evito gastar mais energia.", description: "", signalWeights: { energia: 1.0, vida: -0.5 }, signalTags: ["coping_apatia"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
   {
@@ -173,17 +173,18 @@ const SURVEY_QUESTIONS = [
     questionId: "Q_V3_0303",
     blockId: "block_3",
     order: 9,
-    prompt: "Nas decisões mais estruturantes do último ano, quem ou que elemento tem tido de forma tácita o poder de veto final?",
-    helperText: "Quem cancelou os avanços.",
+    prompt: "Olhando para os teus impasses do último ano, o que tem impedido que dês passos estruturais em frente?",
+    helperText: "",
     inferentialPurpose: "Entender locus externo da autoridade percepcionada.",
     targetSignals: ["liberdade", "apoio", "energia"],
     validationRole: "Autoridade percepcionada",
     legacySourceIds: ["Q_BLK_02"],
     active: true,
     options: [
-      { optionId: "opt_0303_outro", label: "As necessidades (e as reações emocionais esperadas) de terceiros.", description: "", signalWeights: { liberdade: 1.2, apoio: 0.5 }, signalTags: ["locus_relacional"], disambiguatesWhat: [], allowsBranchingTo: [] },
-      { optionId: "opt_0303_logistica", label: "A implacabilidade fria dos números ou da matriz económica/habitacional partilhada.", description: "", signalWeights: { meios: 1.2 }, signalTags: ["locus_meios"], disambiguatesWhat: [], allowsBranchingTo: [] },
-      { optionId: "opt_0303_medo", label: "O meu próprio pragmatismo temeroso e o instinto cético de não expor o flanco ao ridículo e ao insucesso.", description: "", signalWeights: { direcao: 1.0 }, signalTags: ["locus_interno_medo"], disambiguatesWhat: [], allowsBranchingTo: [] }
+      { optionId: "opt_0303_outro", label: "O medo contínuo de desiludir os que estão mais próximos.", description: "", signalWeights: { liberdade: 1.2, apoio: 0.5 }, signalTags: ["locus_relacional"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0303_logistica", label: "A mecânica fria das contas e da incerteza logística que não permite o abanão.", description: "", signalWeights: { meios: 1.2 }, signalTags: ["locus_meios"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0303_medo", label: "O meu próprio calculismo defensivo face ao risco provável de as coisas darem errado.", description: "", signalWeights: { direcao: 1.0 }, signalTags: ["locus_interno_medo"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0303_nenhum", label: "Na verdade, costumo travar-me sozinho antes sequer de ter um motivo concreto.", description: "", signalWeights: { energia: 1.0, baixa_diferenciacao: 0.5 }, signalTags: ["locus_interno_inercia"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
 
@@ -228,16 +229,17 @@ const SURVEY_QUESTIONS = [
     questionId: "Q_V3_0403",
     blockId: "block_4",
     order: 12,
-    prompt: "Se avançasses com a decisão difícil que imaginas, que consequência projetada te trava quase automaticamente?",
-    helperText: "Identificar o limitador do salto no momento real.",
+    prompt: "Se avançasses amanhã para a decisão mais difícil que imaginas, qual seria o teu maior receio no dia seguinte?",
+    helperText: "",
     inferentialPurpose: "Evidência da erosão da margem psicológica de manobra.",
     targetSignals: ["energia", "apoio"],
     validationRole: "Validação somática 2",
     legacySourceIds: ["Q_COS_03"],
     active: true,
     options: [
-      { optionId: "opt_0403_impaciente", label: "Sim, há um grau de reatividade passiva ou fechamento rápido face ao que os outros partilham; sinto-me subitamente indisponível para o 'normal'.", description: "", signalWeights: { energia: 1.0, apoio: -1.0 }, signalTags: ["esgotamento_paciencia"], disambiguatesWhat: [], allowsBranchingTo: [] },
-      { optionId: "opt_0403_dissociado", label: "Não recuso, apenas finjo a presença e aceno em concordância cega automática sem rasto vital de ligação empática.", description: "", signalWeights: { baixa_diferenciacao: 1.0 }, signalTags: ["presenca_automatica"], disambiguatesWhat: [], allowsBranchingTo: [] }
+      { optionId: "opt_0403_impaciente", label: "Arrepender-me num ápice por as coisas se desorganizarem materialmente.", description: "", signalWeights: { meios: 1.0, liberdade: -1.0 }, signalTags: ["medo_desestruturacao"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0403_dissociado", label: "Acabar a magoar as pessoas próximas que nunca iriam perceber a minha decisão.", description: "", signalWeights: { apoio: 1.0 }, signalTags: ["medo_culpabilizacao"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0403_exaustao", label: "Esgotar a pouca energia que já tenho e acabar numa situação pior do que estou agora.", description: "", signalWeights: { energia: 1.5, baixa_diferenciacao: 0.5 }, signalTags: ["medo_fundo_tacho"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
 
@@ -248,17 +250,18 @@ const SURVEY_QUESTIONS = [
     questionId: "Q_V3_0501",
     blockId: "block_5",
     order: 12,
-    prompt: "Se removêssemos todas as justificações lógicas, que metáfora exprime melhor a dor central do que sentes?",
-    helperText: "Despe o problema do ruído das faturas e dos colegas.",
+    prompt: "Quando pensas neste problema a longo prazo, qual é a sensação de fundo que prevalece?",
+    helperText: "",
     inferentialPurpose: "Associação latente psicanalítica das dores da base.",
     targetSignals: ["baixa_diferenciacao"],
     validationRole: "Symbolic bridge",
     legacySourceIds: ["Q_VAL_FIN_01"],
     active: true,
     options: [
-      { optionId: "opt_0501_correntes", label: "A sensação de estar atrelado e de não dispor do direito básico de ditar as próprias fronteiras laborais ou afetivas.", description: "", signalWeights: { liberdade: 1.5 }, signalTags: ["simbologia_sufoco"], disambiguatesWhat: ["liberdade vs. meios"], allowsBranchingTo: [] },
-      { optionId: "opt_0501_abismo", label: "Um quadro em branco descolorido e extenso: não é aperto, é uma falta avassaladora de coordenadas e sentido.", description: "", signalWeights: { direcao: 1.5, vida: -0.5 }, signalTags: ["simbologia_extravio"], disambiguatesWhat: [], allowsBranchingTo: [] },
-      { optionId: "opt_0501_tenda", label: "Sob a iminência de quedar num espaço sem rede de proteção; estar sempre entregue a dinâmicas instáveis e sem colo seguro.", description: "", signalWeights: { apoio: 1.5 }, signalTags: ["simbologia_orfandade"], disambiguatesWhat: [], allowsBranchingTo: [] }
+      { optionId: "opt_0501_correntes", label: "O sentimento de sufoco; estar preso num trajeto demasiadamente desenhado ou pautado pelos outros.", description: "", signalWeights: { liberdade: 1.5 }, signalTags: ["simbologia_sufoco"], disambiguatesWhat: ["liberdade vs. meios"], allowsBranchingTo: [] },
+      { optionId: "opt_0501_abismo", label: "A falta de direção e de entusiasmo generalizado.", description: "", signalWeights: { direcao: 1.5, vida: -0.5 }, signalTags: ["simbologia_extravio"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0501_tenda", label: "Sinto-me apenas cronicamente só. Sem cobertura emocional séria de segurança e com todo o peso às costas.", description: "", signalWeights: { apoio: 1.5 }, signalTags: ["simbologia_orfandade"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0501_confuso", label: "Há uma mistura disto tudo e não consigo distinguir bem.", description: "", signalWeights: { baixa_diferenciacao: 1.0 }, signalTags: ["simbologia_mista"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
   {
@@ -377,17 +380,17 @@ const SURVEY_QUESTIONS = [
     questionId: "Q_V3_0801",
     blockId: "block_8",
     order: 18,
-    prompt: "A tua ambição genuína, despida de formatações protéticas alheias e medos utilitários imediatos, aponta para onde?",
-    helperText: "Qual a direção curativa para os estragos atuais?",
+    prompt: "Se, num cenário perfeito, conseguisses curar os estragos atuais, a tua maior vontade acabava por ser:",
+    helperText: "",
     inferentialPurpose: "Alinhamento construtivo positivo - eixo redentor.",
     targetSignals: ["vida", "direcao", "liberdade"],
     validationRole: "Projeção construtiva",
     legacySourceIds: ["Q_COS_02"],
     active: true,
     options: [
-      { optionId: "opt_0801_auto", label: "Para a capacidade fundamental de ser soberano sobre os meus critérios analíticos e poder ter impacto direto a partir do meu espaço decisional neutro.", description: "", signalWeights: { liberdade: 1.0 }, signalTags: ["ambicao_soberania"], disambiguatesWhat: [], allowsBranchingTo: [] },
-      { optionId: "opt_0801_amor", label: "Para um contexto recíproco relacional mais seguro; procuro restabelecer vínculos profundos base de amparo limpo onde já não me desgaste defender-me constantemente na trincheira invisível...", description: "", signalWeights: { apoio: 1.0 }, signalTags: ["ambicao_vinculo"], disambiguatesWhat: [], allowsBranchingTo: [] },
-      { optionId: "opt_0801_paz", label: "Para uma clareira plana; quero restaurar ritmos orgânicos do dia a dia, diminuindo o ruído a zero se preciso. Exijo abrandar fisiologicamente.", description: "", signalWeights: { energia: 1.5 }, signalTags: ["ambicao_quietude"], disambiguatesWhat: [], allowsBranchingTo: [] }
+      { optionId: "opt_0801_auto", label: "Resgatar a plena soberania sobre as minhas escolhas diárias.", description: "", signalWeights: { liberdade: 1.0 }, signalTags: ["ambicao_soberania"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0801_amor", label: "Ser capaz de confiar numa relação que me apoiasse sem que eu tivesse de aguentar o pilar.", description: "", signalWeights: { apoio: 1.0 }, signalTags: ["ambicao_vinculo"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0801_paz", label: "Simplesmente parar. Abrandar radicalmente e curar o cansaço do meu corpo.", description: "", signalWeights: { energia: 1.5 }, signalTags: ["ambicao_quietude"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
 
