@@ -191,64 +191,40 @@ function renderResults(data) {
   const inf = data.inference;
   const int = data.intervention;
 
-  // Determinar GATING POR BLOCOS CONCLUÍDOS e COBERTURA (Regra BLOCO A)
-  const blocksAnsweredKeys = surveyAnswers.map(s => s.blockId);
-  
-  let gateLevel = 1; // "Nível 1 - Triagem Inicial"
-  
-  if (blocksAnsweredKeys.includes('block_1') && !blocksAnsweredKeys.includes('block_2')) {
-      gateLevel = 1; 
-  } else if (blocksAnsweredKeys.includes('block_1') && blocksAnsweredKeys.includes('block_2')) {
-      gateLevel = 2; // "Leitura Intermédia"
-  }
-  if (blocksAnsweredKeys.includes('block_1') && blocksAnsweredKeys.includes('block_2') && blocksAnsweredKeys.includes('block_3')) {
-      gateLevel = 3; // "Leitura Robusta"
-  }
-  if (blocksAnsweredKeys.includes('block_1') && blocksAnsweredKeys.includes('block_2') && blocksAnsweredKeys.includes('block_3') && blocksAnsweredKeys.includes('block_4')) {
-      gateLevel = 4; // "Leitura Forte Final"
-  }
-  // Cobertura da Convergência a fazer re-downgrade caso a ambiguidade da rede (V2 Engine) seja enorme
-  if (inf.isLowConfidence && gateLevel > 2) gateLevel--;
+  let displayHeadline = "Hipótese Provisória";
+  let displaySubHeadline = inf.provisionalSummary;
+  let dynamicBlocksHTML = '';
 
-  let displayHeadline = inf.headline;
-  let displaySubHeadline = inf.subHeadline;
-  let displayBands = inf.dynamicBands;
-  let displayPriorities = int.previewPriority;
-
-  if (gateLevel === 1) {
-    displayHeadline = "Hipótese Provisória (Nível 1)";
-    displaySubHeadline = `Triagem curta incompleta. O sinal possivelmente mais ativo aponta para ${inf.headline}.`;
-    displayBands = displayBands.map(b => ({...b, label: "Foco sob suspeita - Não Verificado", type: "hipótese inicial"}));
-  } else if (gateLevel === 2) {
-    displayHeadline = "Sinal Dominante em Validação (Nível 2)";
-    displaySubHeadline = `Relações convergem provisoriamente em ${inf.headline}. Mapeamento incompleto.`;
-    displayBands = displayBands.map(b => ({...b, label: "Tensão Emergente", type: "leitura intermédia"}));
-  } else if (gateLevel === 3) {
-    displayHeadline = `Leitura Robusta: ${inf.headline}`;
-    displaySubHeadline = `Convergência real estabelecida: ${inf.subHeadline}`;
-  } else if (gateLevel >= 4) {
-    displayHeadline = `Núcleo Existencial: ${inf.headline}`; // Tudo solto - FULL POWER
+  if (inf.readingDepth === 1) {
+    displayHeadline = `Nível 1 (Triagem): Eixo em Validação (${inf.dominantAxis || 'misto'})`;
+  } else if (inf.readingDepth === 2) {
+    displayHeadline = `Nível 2 (Intermédio): Sinal Dominante - ${inf.dominantAxis || 'Névoa'}`;
+  } else if (inf.readingDepth >= 3) {
+    if (inf.confidenceLevel === 'forte' || inf.confidenceLevel === 'boa') {
+      displayHeadline = `Leitura Robusta Nível ${inf.readingDepth}: Tensão de ${inf.dominantAxis}`;
+      if (inf.strongSummary) displaySubHeadline = inf.strongSummary;
+    } else {
+      displayHeadline = `Aviso: Baixa Diferenciação nos Dados (Profundidade: ${inf.readingDepth})`;
+    }
   }
 
   document.getElementById('res-latent').innerText = displayHeadline;
   document.getElementById('res-manifest').innerText = displaySubHeadline;
 
-  // Dynamic Bands
   const bandsContainer = document.getElementById('dynamic-bands-container');
   bandsContainer.innerHTML = '';
-  displayBands.forEach(band => {
-    const bandHTML = `
-      <div class="dynamic-band">
-        <p class="band-label">${band.type}: ${band.label}</p>
-        <p class="band-value" style="text-transform: capitalize;">${band.value.replace(/_/g, ' ')}</p>
-      </div>
-    `;
-    bandsContainer.innerHTML += bandHTML;
-  });
+  
+  if (inf.convergenceSignals && inf.convergenceSignals.length > 0) {
+      inf.convergenceSignals.forEach(sig => {
+        bandsContainer.innerHTML += `<div class="dynamic-band"><p class="band-label">Sinal de Convergência</p><p class="band-value">${sig}</p></div>`;
+      });
+  } else {
+      bandsContainer.innerHTML += `<div class="dynamic-band"><p class="band-label">Sinalização</p><p class="band-value">Inobservável</p></div>`;
+  }
 
   const ambiguityEl = document.getElementById('ambiguity-warning');
-  if (inf.isLowConfidence && inf.ambiguityDisclaimer) {
-    ambiguityEl.innerText = inf.ambiguityDisclaimer;
+  if (inf.lowDifferentiation) {
+    ambiguityEl.innerText = "ALERTA: Baixa Diferenciação. O motor deteta dispersão de respostas ou névoa estrutural.";
     ambiguityEl.classList.remove('hidden');
   } else {
     ambiguityEl.classList.add('hidden');

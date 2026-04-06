@@ -7,11 +7,8 @@ import { synthesizePsychologicalProfile } from '../services/finalPsychologicalSy
 import { reflectionResultsPresenterV2, V2UIPayload } from '../presenters/reflectionResultsPresenterV2';
 import { EvidenceItem } from '../contracts/inferenceTypes';
 
-export interface V2RunnerInputFull {
-  baseA_signals: EvidenceItem[];
-  baseB_signals: SymbolicEvidence[];
-  deepening_signals: RivalEvidence[];
-}
+import { V2RunnerInputFull } from '../adapters/surveyResponsesToV2EvidenceAdapter';
+import { runSymmetryCrossing } from '../services/crossSymmetryEngine';
 
 export function useReflectionInferenceV2(featureFlagEnabled: boolean, sessionContext: V2RunnerInputFull) {
   if (!featureFlagEnabled) {
@@ -39,12 +36,33 @@ export function useReflectionInferenceV2(featureFlagEnabled: boolean, sessionCon
     clusterDeepeningOutput
   );
 
-  // 5. Transform in visual UI payload that will run transparently side-by-side with Legacy UI
-  const uiPayload: V2UIPayload = reflectionResultsPresenterV2(synthesis);
+  // 5. Novo Motor de Cruzamento de Eixos Intermédios Neutros (Symmetry Engine)
+  const symCross = runSymmetryCrossing(wideScanResult, sessionContext.blocksAnswered || 0, sessionContext.rawAnswers || []);
+
+  const hasEnoughDepth = symCross.readingDepth >= 3;
+  
+  // Regras de Matriz de Confiança
+  let finalConfidence = 'baixa';
+  if (symCross.convergenceSignals.length > 0 && hasEnoughDepth) finalConfidence = 'forte';
+  else if (symCross.convergenceSignals.length > 0) finalConfidence = 'boa';
+  else if (hasEnoughDepth) finalConfidence = 'moderada';
+  if (wideScanResult.isAmbiguous) finalConfidence = 'baixa';
+
+  const engineOutput = {
+    dominantAxis: symCross.dominantAxis,
+    secondaryAxis: symCross.secondaryAxis,
+    confidenceLevel: finalConfidence,
+    convergenceSignals: symCross.convergenceSignals,
+    lowDifferentiation: wideScanResult.isAmbiguous,
+    readingDepth: symCross.readingDepth,
+    provisionalSummary: `Tensão primária detetada no eixo ${symCross.dominantAxis || 'misto'}. ${symCross.convergenceSignals.join('. ')}`,
+    strongSummary: hasEnoughDepth ? symCross.strongSummary : null,
+    symbolicSignals: [synthesis.manifestTheme, synthesis.latentTheme]
+  };
 
   return {
     isActive: true,
     rawSynthesis: synthesis,
-    uiPayload
+    uiPayload: engineOutput
   };
 }

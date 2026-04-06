@@ -2,7 +2,6 @@
 import { EvidenceItem } from '../contracts/inferenceTypes';
 import { SymbolicEvidence } from '../services/symbolicLifeFieldsEngine';
 import { RivalEvidence } from '../services/rivalHypothesisEngine';
-import { V2RunnerInputFull } from '../facades/useReflectionInferenceV2';
 import { getMappingForOption } from './surveyOptionEvidenceDictionary';
 
 export interface LegacySurveyBlock {
@@ -13,13 +12,25 @@ export interface LegacySurveyBlock {
   }[];
 }
 
+export interface V2RunnerInputFull {
+  baseA_signals: EvidenceItem[];
+  baseB_signals: SymbolicEvidence[];
+  deepening_signals: RivalEvidence[];
+  blocksAnswered: number;
+  rawAnswers: { questionId: string, selectedOptionId: string }[];
+}
+
 export function convertSurveyToV2Input(legacyBlocks: LegacySurveyBlock[]): V2RunnerInputFull {
   const baseA_signals: EvidenceItem[] = [];
   const baseB_signals: SymbolicEvidence[] = [];
   const deepening_signals: RivalEvidence[] = [];
+  const rawAnswers: { questionId: string, selectedOptionId: string }[] = [];
+  
+  const blocksAnswered = legacyBlocks.length;
 
   legacyBlocks.forEach(block => {
     block.answers.forEach(ans => {
+      rawAnswers.push(ans);
       const mapping = getMappingForOption(ans.selectedOptionId);
       
       if (!mapping) {
@@ -74,5 +85,5 @@ export function convertSurveyToV2Input(legacyBlocks: LegacySurveyBlock[]): V2Run
     });
   });
 
-  return { baseA_signals, baseB_signals, deepening_signals };
+  return { baseA_signals, baseB_signals, deepening_signals, blocksAnswered, rawAnswers };
 }
