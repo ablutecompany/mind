@@ -4,6 +4,9 @@ let surveyAnswers = []; // holds objects: { blockId, answers: [{ questionId, sel
 let currentQuestionSelections = new Set();
 let testerFeedback = []; // Holds the feedback issues
 
+const APP_VERSION = "1.1.0-RC";
+const SESSION_ID = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).substring(2, 10);
+
 const screens = {
   landing: document.getElementById('landing-screen'),
   question: document.getElementById('question-screen'),
@@ -164,14 +167,23 @@ document.getElementById('save-feedback-btn').addEventListener('click', () => {
     const issueType = document.getElementById('issue-type').value;
     const comment = document.getElementById('issue-comment').value;
 
+    const optionsShownStr = q.options.map(o => o.text).join(' | ');
+    const selectedAnswersStr = Array.from(currentQuestionSelections).map(optId => {
+        const found = q.options.find(o => o.id === optId);
+        return found ? found.text : optId;
+    }).join(' | ');
+
     testerFeedback.push({
+        appVersion: APP_VERSION,
+        sessionId: SESSION_ID,
         timestamp: new Date().toISOString(),
         blockId: q.blockId,
         questionId: q.id,
         questionText: q.text,
+        optionsShown: optionsShownStr,
+        selectedAnswers: selectedAnswersStr,
         issueType,
-        comment,
-        currentSelections: Array.from(currentQuestionSelections)
+        comment
     });
 
     alert("Feedback guardado!");
@@ -267,23 +279,38 @@ document.getElementById('export-feedback-btn').addEventListener('click', () => {
         alert("Não criaste nenhum registo de problema (nenhum clique no botão amarelo de report).");
         return;
     }
-    // Convert to CSV
-    const replacer = (key, value) => value === null ? '' : value;
-    const header = Object.keys(testerFeedback[0]);
-    const csv = [
-      header.join(','),
-      ...testerFeedback.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
-    ].join('\r\n');
+    
+    // Choose format
+    const format = confirm("Pressiona OK para transferir JSon. Pressiona Cancelar para transferir CSV.") ? 'json' : 'csv';
 
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('hidden', '');
-    a.setAttribute('href', url);
-    a.setAttribute('download', 'mind-tester-feedback.csv');
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    if (format === 'csv') {
+      const replacer = (key, value) => value === null ? '' : value;
+      const header = Object.keys(testerFeedback[0]);
+      const csv = [
+        header.join(','),
+        ...testerFeedback.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','))
+      ].join('\r\n');
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.setAttribute('hidden', '');
+      a.setAttribute('href', url);
+      a.setAttribute('download', `mind-feedback-${SESSION_ID}.csv`);
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } else {
+      const blob = new Blob([JSON.stringify(testerFeedback, null, 2)], { type: 'application/json' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.setAttribute('hidden', '');
+      a.setAttribute('href', url);
+      a.setAttribute('download', `mind-feedback-${SESSION_ID}.json`);
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
 });
 
 document.getElementById('paywall-btn').addEventListener('click', () => {
