@@ -404,9 +404,6 @@ function renderResults(data) {
     ambiguityEl.classList.add('hidden');
   }
 
-  document.getElementById('preview-reading').innerText = int.previewReading;
-  document.getElementById('preview-priority').innerText = int.previewPriority;
-  document.getElementById('preview-action').innerText = int.previewAction;
 
   activateScreen(screens.result);
 }
