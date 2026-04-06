@@ -60,7 +60,13 @@ export function useReflectionInferenceV2(featureFlagEnabled: boolean, sessionCon
     finalConfidence = 'moderada'; // Fallback if 3 or 4 but dispersed
   }
 
-  const narrative = generateNarrative(symCross.dominantAxis, isNebula);
+  const payloadForNarrative = {
+      dominantAxis: symCross.dominantAxis, 
+      secondaryAxis: symCross.secondaryAxis,
+      manifestContext: synthesis.manifestTheme,
+      defenseMechanism: synthesis.primaryDefense || null
+  };
+  const narrative = generateNarrative(payloadForNarrative, isNebula);
 
   const engineOutput = {
     // CAMADA A — técnica interna

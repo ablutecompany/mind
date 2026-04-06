@@ -96,9 +96,10 @@ function loadQuestion() {
   }
 
   const q = SURVEY_QUESTIONS[currentStep];
-  document.getElementById('question-text').innerText = q.text;
+  document.getElementById('question-text').innerText = q.prompt || q.text;
 
-  let maxText = q.maxSelections > 1 ? `(Escolhe até ${q.maxSelections} opções)` : `(Escolhe apenas 1 opção)`;
+  const maxSelect = q.maxSelections || 1;
+  let maxText = maxSelect > 1 ? `(Escolhe até ${maxSelect} opções)` : `(Escolhe apenas 1 opção)`;
   const blockNum = q.blockId.split('_')[1];
   document.getElementById('question-instruction').innerText = `Bloco ${blockNum}: ${SURVEY_BLOCKS[blockNum].title} - ${maxText}`;
   
@@ -107,7 +108,24 @@ function loadQuestion() {
   document.getElementById('progress-bar').style.width = progressPerc + '%';
 
   // Navigation Logic
-  document.getElementById('back-btn').style.display = currentStep > 0 ? 'block' : 'none';
+  // Go back effectively ignores branching history and just goes 1 index back sequentially or needs a previous step tracker.
+  // For simplicity and auditability: find the last answered step.
+  const answeredSteps = [];
+  SURVEY_QUESTIONS.forEach((sq, idx) => {
+      const bObj = surveyAnswers.find(b => b.blockId === sq.blockId);
+      if (bObj && bObj.answers.find(a => (a.questionId === sq.questionId || a.questionId === sq.id))) {
+          if (idx < currentStep) answeredSteps.push(idx);
+      }
+  });
+  
+  const backBtn = document.getElementById('back-btn');
+  backBtn.style.display = answeredSteps.length > 0 ? 'block' : 'none';
+  backBtn.onclick = () => {
+      if(answeredSteps.length > 0) {
+          currentStep = answeredSteps[answeredSteps.length - 1];
+          loadQuestion();
+      }
+  };
 
   // Next Btn and Middle Submit state
   const nextBtn = document.getElementById('next-btn');
@@ -142,7 +160,8 @@ function loadQuestion() {
   currentQuestionSelections.clear();
   const existingBlockObj = surveyAnswers.find(s => s.blockId === q.blockId);
   if (existingBlockObj) {
-      const answersForThisQ = existingBlockObj.answers.filter(a => a.questionId === q.id);
+      const qId = q.questionId || q.id;
+      const answersForThisQ = existingBlockObj.answers.filter(a => a.questionId === qId);
       answersForThisQ.forEach(a => currentQuestionSelections.add(a.selectedOptionId));
   }
 
@@ -153,9 +172,10 @@ function loadQuestion() {
 
   q.options.forEach(opt => {
     const btn = document.createElement('button');
-    btn.className = currentQuestionSelections.has(opt.id) ? 'option-btn selected' : 'option-btn';
-    btn.innerText = opt.text;
-    btn.onclick = () => handleToggleOption(q, opt.id, btn);
+    const optId = opt.optionId || opt.id;
+    btn.className = currentQuestionSelections.has(optId) ? 'option-btn selected' : 'option-btn';
+    btn.innerText = opt.label || opt.text;
+    btn.onclick = () => handleToggleOption(q, optId, btn);
     container.appendChild(btn);
   });
 
@@ -163,13 +183,14 @@ function loadQuestion() {
 }
 
 function handleToggleOption(question, optId, btnEl) {
-    if (currentQuestionSelections.has(optId)) {
+  const maxSelect = question.maxSelections || 1;
+  if (currentQuestionSelections.has(optId)) {
         currentQuestionSelections.delete(optId);
         btnEl.classList.remove('selected');
     } else {
-        if (currentQuestionSelections.size >= question.maxSelections) {
+        if (currentQuestionSelections.size >= maxSelect) {
             // Se as selecções estão maxed e é de selecção única, faz toggle (substitui)
-            if (question.maxSelections === 1) {
+            if (maxSelect === 1) {
                 currentQuestionSelections.clear();
                 document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
                 currentQuestionSelections.add(optId);
@@ -187,25 +208,64 @@ function handleToggleOption(question, optId, btnEl) {
 }
 
 document.getElementById('next-btn').addEventListener('click', () => {
-    const q = SURVEY_QUESTIONS[currentStep];
-    
-    // Find or construct Block Object
-    let blockObj = surveyAnswers.find(s => s.blockId === q.blockId);
-    if (!blockObj) {
-        blockObj = { blockId: q.blockId, answers: [] };
-        surveyAnswers.push(blockObj);
-    }
-    
-    // Destrói as da Q atual e reescreve
-    blockObj.answers = blockObj.answers.filter(a => a.questionId !== q.id);
-    currentQuestionSelections.forEach(optId => {
-        blockObj.answers.push({ questionId: q.id, selectedOptionId: optId });
-    });
+  const q = SURVEY_QUESTIONS[currentStep];
+  const qId = q.questionId || q.id;
 
-    currentStep++;
-    saveLocalState();
+  let blockObjStr = surveyAnswers.find(b => b.blockId === q.blockId);
+  if (!blockObjStr) {
+      blockObjStr = { blockId: q.blockId, answers: [] };
+      surveyAnswers.push(blockObjStr);
+  }
+
+  // filter any previous answers for this question
+  blockObjStr.answers = blockObjStr.answers.filter(a => a.questionId !== qId);
+
+  // add current
+  currentQuestionSelections.forEach(optStringId => {
+      blockObjStr.answers.push({ questionId: qId, selectedOptionId: optStringId });
+  });
+
+  // Calculate next eligible step using signals
+  const signals = getAccumulatedSignals();
+  let nextStep = currentStep + 1;
+  while(nextStep < SURVEY_QUESTIONS.length) {
+      const nextQ = SURVEY_QUESTIONS[nextStep];
+      if (!nextQ.dependsOnSignals || nextQ.dependsOnSignals.length === 0) {
+          break; // Always show if no dependencies
+      }
+      // Check if any required signal is present
+      const hasRequiredSignal = nextQ.dependsOnSignals.some(sig => signals.has(sig));
+      if (hasRequiredSignal) {
+          break; // Required signal found, stop and ask this question
+      }
+      nextStep++; // Skip
+  }
+
+  currentStep = nextStep;
+  saveLocalState();
+  
+  if (currentStep >= SURVEY_QUESTIONS.length) {
+    submitEvaluation();
+  } else {
     loadQuestion();
+  }
 });
+
+function getAccumulatedSignals() {
+    const signals = new Set();
+    surveyAnswers.forEach(b => {
+        b.answers.forEach(a => {
+            const q = SURVEY_QUESTIONS.find(sq => sq.questionId === a.questionId || sq.id === a.questionId);
+            if (q) {
+                const opt = q.options.find(o => (o.optionId || o.id) === a.selectedOptionId);
+                if (opt && opt.signalTags) {
+                    opt.signalTags.forEach(tag => signals.add(tag));
+                }
+            }
+        });
+    });
+    return signals;
+}
 
 document.getElementById('back-btn').addEventListener('click', () => {
     if (currentStep > 0) {
@@ -226,6 +286,7 @@ document.getElementById('cancel-feedback-btn').addEventListener('click', () => {
 
 document.getElementById('save-feedback-btn').addEventListener('click', () => {
     const q = SURVEY_QUESTIONS[currentStep];
+
     const issueType = document.getElementById('issue-type').value;
     const comment = document.getElementById('issue-comment').value;
 
@@ -304,31 +365,35 @@ function renderResults(data) {
     // Apenas submeteu B1 incompleto ou muito fraco (Misto)
     container.innerHTML = `<h3 style="color:#8b949e">Triagem Preliminar</h3><p class="preview-reading">A quantidade de dados inserida ainda não compila um perfil estabilizado. Avança para a Leitura Aprofundada.</p>`;
   } else if (inf.narrative) {
-    // Rendering the 4 layers of Narrative
-    const { superficie, simbolismo, roubo, sintese } = inf.narrative;
+    // Rendering the 5 layers of Narrative
+    const { superficie, simbolismo, roubo, nucleo, sintese } = inf.narrative;
     
     // Header dinâmico dependendo da profundidade e confiança
     let depthTitle = "Leitura Parcial";
     if (inf.readingDepth >= 7) depthTitle = "Leitura Aprofundada";
     if (inf.readingDepth >= 10) depthTitle = "Leitura Completa";
     
-    container.innerHTML = `
+    let outcomeHtml = `
       <h3 style="color:#d29922; margin-bottom: 2rem;">[ ${depthTitle} ]</h3>
       
-      <p class="section-label">O QUE ESTÁ À SUPERFÍCIE</p>
-      <p style="color:#c9d1d9; font-size:1.1rem; line-height:1.6; margin-bottom: 2rem;">${superficie}</p>
+      <p class="section-label">1. À SUPERFÍCIE</p>
+      <p style="color:#c9d1d9; font-size:1.1rem; line-height:1.6; margin-bottom: 2rem;">${superficie || ''}</p>
       
-      <p class="section-label">O SINAL LATENTE</p>
-      <p style="color:#c9d1d9; font-size:1.1rem; line-height:1.6; margin-bottom: 2rem;">${simbolismo}</p>
+      <p class="section-label">2. O SINAL LATENTE</p>
+      <p style="color:#c9d1d9; font-size:1.1rem; line-height:1.6; margin-bottom: 2rem;">${simbolismo || ''}</p>
       
-      <p class="section-label">O QUE TE ESTÁ A CUSTAR</p>
-      <p style="color:#c9d1d9; font-size:1.1rem; line-height:1.6; margin-bottom: 2rem; border-left: 3px solid #cb2431; padding-left: 14px;">${roubo}</p>
+      <p class="section-label">3. O QUE TE ESTÁ A CUSTAR</p>
+      <p style="color:#c9d1d9; font-size:1.1rem; line-height:1.6; margin-bottom: 2rem; border-left: 3px solid #cb2431; padding-left: 14px;">${roubo || ''}</p>
+      
+      <p class="section-label" style="color: #bc8cff;">4. NÚCLEO ORGANIZADOR</p>
+      <p style="color:#c9d1d9; font-size:1.1rem; line-height:1.6; margin-bottom: 2rem; border-left: 3px solid #bc8cff; padding-left: 14px;">${nucleo || ''}</p>
       
       <div class="intervention-teaser" style="background:#0d1117; border: 1px solid #30363d; border-left: 4px solid #58a6ff;">
          <p class="section-label" style="color:#58a6ff;">SÍNTESE DA TENSÃO</p>
-         <h2 style="font-size:1.5rem; color:#fff; margin-bottom:0;">${sintese}</h2>
+         <h2 style="font-size:1.5rem; color:#fff; margin-bottom:0; font-style: italic;">“${sintese || ''}”</h2>
       </div>
     `;
+    container.innerHTML = outcomeHtml;
   }
 
   const ambiguityEl = document.getElementById('ambiguity-warning');

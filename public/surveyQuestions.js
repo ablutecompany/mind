@@ -1,570 +1,466 @@
 // public/surveyQuestions.js
+
+/**
+ * FASE 2B: ARQUITETURA 10 BLOCOS - VERSÃO SÓBRIA E DENSA (24 PERGUNTAS)
+ * Linguagem limpa de excessos teatrais. Foco em clareza, inteligência e reconhecimento profundo.
+ * Inclui ramificação auditável baseada em "dependsOnSignals".
+ */
+
 const SURVEY_BLOCKS = {
-  1: { id: "block_1", title: "Orientação Inicial do Aperto" },
-  2: { id: "block_2", title: "Aprofundamento do Aperto" },
-  3: { id: "block_3", title: "Priorização do Núcleo" },
-  4: { id: "block_4", title: "Símbolos Concretos e Leitura Existencial" },
-  5: { id: "block_5", title: "Defesas Ativas e Comportamentos Compensatórios" },
-  6: { id: "block_6", title: "Custos e Danos Colaterais" },
-  7: { id: "block_7", title: "Verificação de Eixos Rivais e Atrito Interno" },
-  8: { id: "block_8", title: "Ação Adiada e Resistência Prática" },
-  9: { id: "block_9", title: "Escala Existencial e Valores de Reposição" },
-  10: { id: "block_10", title: "Prontidão para Agir (Fecho)" }
+  1: { id: "block_1", title: "Triagem Inicial" },
+  2: { id: "block_2", title: "Contexto Concreto" },
+  3: { id: "block_3", title: "Mecânica do Bloqueio" },
+  4: { id: "block_4", title: "Custos e Danos" },
+  5: { id: "block_5", title: "Significado e Símbolo" },
+  6: { id: "block_6", title: "Cenário Temido" },
+  7: { id: "block_7", title: "Desempate e Eixos Rivais" },
+  8: { id: "block_8", title: "Vida Desejada" },
+  9: { id: "block_9", title: "Prontidão para Agir" },
+  10: { id: "block_10", title: "Fecho e Validação" }
 };
 
 const SURVEY_QUESTIONS = [
-  // ============================================
-  // BLOCO 1
-  // ============================================
+  // ==========================================
+  // BLOCO 1: TRIAGEM INICIAL
+  // ==========================================
   {
-    id: "b1_q1", blockId: "block_1", maxSelections: 3,
-    text: "Quando pensas no que te está a travar, sentes mais:",
+    questionId: "Q_V3_0101",
+    blockId: "block_1",
+    order: 1,
+    prompt: "Neste momento, onde sentes que está o centro do teu bloqueio?",
+    helperText: "Tenta não focar nas consequências, mas na causa que parece não ter solução evidente hoje.",
+    inferentialPurpose: "Identificação da raiz declarativa do impasse.",
+    targetSignals: ["meios", "apoio", "liberdade", "energia", "direcao", "vida"],
+    validationRole: "Abertura de cenário",
+    legacySourceIds: ["Q_TRI_01"],
+    active: true,
     options: [
-      { id: "opt_meios", text: "falta de meios" },
-      { id: "opt_apoio", text: "falta de apoio, ligação ou estrutura afetiva" },
-      { id: "opt_liberdade", text: "falta de liberdade" },
-      { id: "opt_energia", text: "falta de energia" },
-      { id: "opt_direcao", text: "falta de direção" },
-      { id: "opt_vida", text: "falta de vida" },
-      { id: "opt_nevoa", text: "não consigo identificar bem" }
+      { optionId: "opt_0101_meios", label: "Não tenho margem financeira ou logística para mudar o que preciso.", description: "", signalWeights: { meios: 1.0 }, signalTags: ["falta_meios", "logistica"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0101_apoio", label: "Sinto-me isolado; não tenho uma rede segura que me ampare.", description: "", signalWeights: { apoio: 1.2 }, signalTags: ["falta_apoio", "relacional"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0101_liberdade", label: "Estou demasiado preso a obrigações e expectativas de outras pessoas.", description: "", signalWeights: { liberdade: 1.0 }, signalTags: ["excesso_responsabilidade", "restricao"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0101_energia", label: "Esgotamento crónico. Não tenho vitalidade suficiente para iniciar uma mudança.", description: "", signalWeights: { energia: 1.0 }, signalTags: ["exaustao", "biologico"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0101_vida", label: "Falta de sentido. Uma sensação de que a vida está suspensa ou no automático.", description: "", signalWeights: { vida: 1.5, baixa_diferenciacao: 0.5 }, signalTags: ["vida_suspensa"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
   {
-    id: "b1_q2", blockId: "block_1", maxSelections: 3,
-    text: "Neste momento, o que te pesa mais por dentro ou por fora?",
+    questionId: "Q_V3_0102",
+    blockId: "block_1",
+    order: 2,
+    prompt: "Se pudesses resolver instantaneamente uma destas áreas, qual escolherias?",
+    helperText: "Uma escolha hipotética para testar o que valorizas primeiro como saída de emergência.",
+    inferentialPurpose: "Testar o eixo de dor através do desejo de compensação.",
+    targetSignals: ["meios", "liberdade", "direcao"],
+    validationRole: "Valida triagem 1",
+    legacySourceIds: ["Q_TRI_05"],
+    active: true,
     options: [
-      { id: "opt_meios_peso", text: "não ter margem material suficiente" },
-      { id: "opt_apoio_peso", text: "sentir pouco apoio ou pouca base emocional" },
-      { id: "opt_liberdade_peso", text: "viver demasiado condicionado/a" },
-      { id: "opt_energia_peso", text: "andar cansado/a ou drenado/a" },
-      { id: "opt_direcao_peso", text: "não ver um rumo claro" },
-      { id: "opt_vida_peso", text: "sentir a vida sem brilho, intensidade ou presença" },
-      { id: "opt_nevoa_peso", text: "continua tudo demasiado misturado" }
-    ]
-  },
-  {
-    id: "b1_q3", blockId: "block_1", maxSelections: 3,
-    text: "Se hoje quisesses mudar a tua vida, o que te dificultaria mais dar passos reais?",
-    options: [
-      { id: "opt_meios_dif", text: "não ter recursos suficientes" },
-      { id: "opt_apoio_dif", text: "não ter retaguarda afetiva ou estabilidade relacional" },
-      { id: "opt_liberdade_dif", text: "estar preso/a a demasiadas limitações" },
-      { id: "opt_energia_dif", text: "não ter força mental ou física para puxar por mim" },
-      { id: "opt_direcao_dif", text: "não saber para onde ir" },
-      { id: "opt_vida_dif", text: "sentir que me falta impulso vivo para querer mesmo mexer" },
-      { id: "opt_nevoa_dif", text: "nem sei bem por onde começaria" }
-    ]
-  },
-  {
-    id: "b1_q4", blockId: "block_1", maxSelections: 3,
-    text: "O que sentes mais em falta para te sentires realmente em movimento?",
-    options: [
-      { id: "opt_meios_falta", text: "meios" },
-      { id: "opt_apoio_falta", text: "apoio" },
-      { id: "opt_liberdade_falta", text: "liberdade" },
-      { id: "opt_energia_falta", text: "energia" },
-      { id: "opt_direcao_falta", text: "direção" },
-      { id: "opt_vida_falta", text: "vida" },
-      { id: "opt_nevoa_falta", text: "clareza" }
-    ]
-  },
-  {
-    id: "b1_q5", blockId: "block_1", maxSelections: 3,
-    text: "Olhando para o conjunto, o que sentes estar mais no centro disto tudo neste momento?",
-    options: [
-      { id: "opt_meios_centro", text: "meios" },
-      { id: "opt_apoio_centro", text: "apoio / estrutura afetiva" },
-      { id: "opt_liberdade_centro", text: "liberdade" },
-      { id: "opt_energia_centro", text: "energia" },
-      { id: "opt_direcao_centro", text: "direção" },
-      { id: "opt_vida_centro", text: "vida" },
-      { id: "opt_nevoa_centro", text: "ainda está demasiado misturado para eu reduzir a uma coisa só" }
-    ]
-  },
-  {
-    id: "b1_q6", blockId: "block_1", maxSelections: 3,
-    text: "Qual destas hipóteses te parece mais verdadeira?",
-    options: [
-      { id: "opt_meios_causa", text: "o meu problema principal é material: o resto agrava-se a partir daí" },
-      { id: "opt_apoio_causa", text: "o meu problema principal é afetivo ou relacional: o resto vem atrás" },
-      { id: "opt_liberdade_causa", text: "o meu problema principal é falta de liberdade ou excesso de condicionamento" },
-      { id: "opt_energia_causa", text: "o meu problema principal é desgaste: estou sem energia para mudar" },
-      { id: "opt_direcao_causa", text: "o meu problema principal é não saber para onde ir" },
-      { id: "opt_vida_causa", text: "o meu problema principal é sentir a vida apagada, adiada ou sem chama" },
-      { id: "opt_nevoa_causa", text: "ainda não consigo perceber o que é causa e o que é consequência" }
+      { optionId: "opt_0102_grana", label: "A segurança estrutural e as preocupações financeiras imediatas.", description: "", signalWeights: { meios: 1.1 }, signalTags: ["deseja_meios"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0102_obrig", label: "O peso das responsabilidades e da necessidade de justificar as minhas escolhas.", description: "", signalWeights: { liberdade: 1.5 }, signalTags: ["deseja_liberdade"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0102_direcao", label: "A sensação profunda de apatia e de não saber que direção tomar a seguir.", description: "", signalWeights: { direcao: 1.0, vida: 0.5 }, signalTags: ["deseja_sentido"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
 
-  // ============================================
-  // BLOCO 2
-  // ============================================
+  // ==========================================
+  // BLOCO 2: CONTEXTO CONCRETO
+  // ==========================================
   {
-    id: "b2_q1", blockId: "block_2", maxSelections: 2,
-    text: "Quando sentes que não tens margem para mexer na tua vida, o que pesa mais?",
+    questionId: "Q_V3_0201",
+    blockId: "block_2",
+    order: 3,
+    prompt: "Esta restrição atual faz-te sentir que perdeste o controlo sobre as tuas decisões estruturais, ou é uma limitação que ainda consegues gerir?",
+    helperText: "Avalia a diferença entre um problema e uma perda de dignidade ou autonomia.",
+    inferentialPurpose: "Discriminação entre desconforto transitório e castração humilhante.",
+    targetSignals: ["meios", "vida", "baixa_diferenciacao"],
+    validationRole: "Teste de autonomia base",
+    legacySourceIds: ["Q_DIS_FIN_02"],
+    active: true,
     options: [
-      { id: "b2_opt1_1", text: "não ter dinheiro suficiente para decidir ou avançar" },
-      { id: "b2_opt1_2", text: "depender demasiado das circunstâncias para conseguir mexer-me" },
-      { id: "b2_opt1_3", text: "sentir que qualquer passo tem custo ou risco excessivo" },
-      { id: "b2_opt1_4", text: "ter pouca folga para errar, experimentar ou recomeçar" },
-      { id: "b2_opt1_5", text: "sentir que a minha vida está demasiado condicionada por limites práticos" },
-      { id: "b2_opt1_6", text: "não sei se é mesmo margem material ou outra coisa por baixo" }
+      { optionId: "opt_0201_hum", label: "Perdi controlo real; sinto que engulo opções por dependência aos outros ou ao ordenado.", description: "", signalWeights: { meios: 1.5, vida: -0.5 }, signalTags: ["perda_dignidade"], disambiguatesWhat: ["peso_ontologico_material"], allowsBranchingTo: [] },
+      { optionId: "opt_0201_prat", label: "Apesar do desconforto ou privação, interiormente mantenho a minha independência e clareza.", description: "", signalWeights: { meios: 0.4 }, signalTags: ["independencia_mantida"], disambiguatesWhat: ["desconforto"], allowsBranchingTo: [] }
     ]
   },
   {
-    id: "b2_q2", blockId: "block_2", maxSelections: 2,
-    text: "Se te falta base afetiva ou sustentação, isso aparece mais como:",
+    questionId: "Q_V3_0202",
+    blockId: "block_2",
+    order: 4,
+    prompt: "Quando entras no espaço onde passas a maior parte do teu dia, como reage o teu corpo?",
+    helperText: "Dá atenção ao estado físico autónomo, antes de qualquer racionalização.",
+    inferentialPurpose: "Acesso ao reflexo neurológico primitivo (espaço familiar/laboral).",
+    targetSignals: ["apoio", "liberdade", "energia"],
+    validationRole: "Contexto espacial",
+    legacySourceIds: ["Q_DIS_HAB_02"],
+    active: true,
     options: [
-      { id: "b2_opt2_1", text: "sentir-me só com o que carrego" },
-      { id: "b2_opt2_2", text: "não ter com quem contar de forma estável" },
-      { id: "b2_opt2_3", text: "estar rodeado/a e, mesmo assim, não me sentir acompanhado/a" },
-      { id: "b2_opt2_4", text: "sentir falta de proximidade, pertença ou calor humano" },
-      { id: "b2_opt2_5", text: "sentir que tenho de aguentar tudo por mim" },
-      { id: "b2_opt2_6", text: "não sei se me falta apoio ou se me fechei demasiado" }
+      { optionId: "opt_0202_relax", label: "Descontrai de certa forma, continua a ser uma base onde posso respirar.", description: "", signalWeights: { apoio: 0.8 }, signalTags: ["amparo_espacial"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0202_tenso", label: "Fica imediatamente hipervigilante ou defensivo.", description: "", signalWeights: { liberdade: -1.0, energia: -1.0 }, signalTags: ["tensao_ambiente"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0202_cemiterio", label: "Simplesmente desliga as baterias, entrando num modo automático e opaco.", description: "", signalWeights: { baixa_diferenciacao: 1.0, vida: -1.0 }, signalTags: ["apatia_ambiente"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
   {
-    id: "b2_q3", blockId: "block_2", maxSelections: 2,
-    text: "Quando pensas em falta de liberdade, isso tem mais a ver com:",
+    // RAMIFICAÇÃO: Apenas perguntada se sinalizou "falta_meios" no B1.
+    questionId: "Q_V3_0203_BRANCH",
+    blockId: "block_2",
+    order: 5,
+    dependsOnSignals: ["falta_meios", "deseja_meios"],
+    prompt: "Em relação ao teu dinheiro ou margem logística mensal, a barreira existe na ausência real de fundos ou no controlo restritivo de terceiro?",
+    helperText: "Importante para separar falta funcional de privação imposta.",
+    inferentialPurpose: "Apurar origem da falta de meios.",
+    targetSignals: ["meios", "liberdade"],
+    validationRole: "Branch Means",
+    legacySourceIds: ["Q_BLK_FIN_01"],
+    active: true,
     options: [
-      { id: "b2_opt3_1", text: "depender demasiado de pessoas, contextos ou circunstâncias" },
-      { id: "b2_opt3_2", text: "ter responsabilidades que me apertam demasiado" },
-      { id: "b2_opt3_3", text: "viver numa vida que não consigo moldar à minha maneira" },
-      { id: "b2_opt3_4", text: "sentir que não posso escolher como queria" },
-      { id: "b2_opt3_5", text: "estar preso/a a compromissos, hábitos ou estruturas que já me pesam" },
-      { id: "b2_opt3_6", text: "não sei se é falta de liberdade ou medo de assumir o que quero" }
+      { optionId: "opt_0203_mat", label: "Ausência real de dinheiro. Os números não chegam para pagar o necessário para mudar.", description: "", signalWeights: { meios: 1.5 }, signalTags: ["barreira_matematica"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0203_rel", label: "Os bens existem, mas estou sujeito à permissão, avaliação ou controlo de alguém.", description: "", signalWeights: { liberdade: 1.5 }, signalTags: ["barreira_controlo"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
   {
-    id: "b2_q4", blockId: "block_2", maxSelections: 2,
-    text: "Se o problema for energia, o que reconheces mais em ti?",
+    // RAMIFICAÇÃO: Apenas perguntada se sinalizou "falta_apoio" no B1.
+    questionId: "Q_V3_0204_BRANCH",
+    blockId: "block_2",
+    order: 6,
+    dependsOnSignals: ["falta_apoio", "excesso_responsabilidade"],
+    prompt: "Qual sentes que é o teu principal papel atual no teu círculo próximo?",
+    helperText: "Tenta definir de forma pragmática como interages nos bastidores familiares.",
+    inferentialPurpose: "Apurar assimetria relacional familiar.",
+    targetSignals: ["apoio"],
+    validationRole: "Branch Relationship",
+    legacySourceIds: ["Q_DIS_FAM_02"],
+    active: true,
     options: [
-      { id: "b2_opt4_1", text: "cansaço físico ou mental acumulado" },
-      { id: "b2_opt4_2", text: "desgaste prolongado que me tira força para mexer na vida" },
-      { id: "b2_opt4_3", text: "dificuldade em começar coisas, mesmo quando quero" },
-      { id: "b2_opt4_4", text: "sensação de saturação ou esgotamento interior" },
-      { id: "b2_opt4_5", text: "pouca força para sustentar mudanças com continuidade" },
-      { id: "b2_opt4_6", text: "não sei se me falta energia ou se me falta motivação real" }
-    ]
-  },
-  {
-    id: "b2_q5", blockId: "block_2", maxSelections: 2,
-    text: "Se o problema for direção, isso sente-se mais como:",
-    options: [
-      { id: "b2_opt5_1", text: "não saber qual devia ser o próximo passo" },
-      { id: "b2_opt5_2", text: "ver demasiadas hipóteses e não conseguir escolher" },
-      { id: "b2_opt5_3", text: "sentir que já não acredito muito em nenhum rumo" },
-      { id: "b2_opt5_4", text: "não conseguir transformar vontade em caminho claro" },
-      { id: "b2_opt5_5", text: "sentir-me perdido/a entre dever, medo e desejo" },
-      { id: "b2_opt5_6", text: "não sei se me falta direção ou coragem para assumir uma direção" }
-    ]
-  },
-  {
-    id: "b2_q6", blockId: "block_2", maxSelections: 2,
-    text: "Se sentes falta de vida, isso aparece mais como:",
-    options: [
-      { id: "b2_opt6_1", text: "rotina sem brilho nem presença" },
-      { id: "b2_opt6_2", text: "sensação de estar a viver abaixo do que sou ou quero" },
-      { id: "b2_opt6_3", text: "falta de entusiasmo, magnetismo ou impulso vivo" },
-      { id: "b2_opt6_4", text: "sentir a vida demasiado funcional e pouco sentida" },
-      { id: "b2_opt6_5", text: "sensação de vida adiada, apagada ou sem chama" },
-      { id: "b2_opt6_6", text: "não sei se me falta vida ou se estou demasiado cansado/a para a sentir" }
-    ]
-  },
-  {
-    id: "b2_q7", blockId: "block_2", maxSelections: 2,
-    text: "No concreto, o que sentes estar mais sacrificado neste momento?",
-    options: [
-      { id: "b2_opt7_1", text: "capacidade de decidir com margem" },
-      { id: "b2_opt7_2", text: "sensação de pertença ou apoio" },
-      { id: "b2_opt7_3", text: "autonomia para viver à minha maneira" },
-      { id: "b2_opt7_4", text: "energia para mudar e sustentar mudança" },
-      { id: "b2_opt7_5", text: "clareza sobre o rumo" },
-      { id: "b2_opt7_6", text: "vitalidade, presença ou vontade de viver mais plenamente" },
-      { id: "b2_opt7_7", text: "continua tudo muito misturado" }
-    ]
-  },
-  {
-    id: "b2_q8", blockId: "block_2", maxSelections: 2,
-    text: "Qual é o custo menos visível disto tudo em ti?",
-    options: [
-      { id: "b2_opt8_1", text: "andar sempre em contenção ou vigilância" },
-      { id: "b2_opt8_2", text: "sentir-me mais sozinho/a do que mostro" },
-      { id: "b2_opt8_3", text: "sentir-me diminuído/a ou sem espaço real" },
-      { id: "b2_opt8_4", text: "viver cansado/a antes mesmo de começar" },
-      { id: "b2_opt8_5", text: "andar às voltas sem conseguir assentar num caminho" },
-      { id: "b2_opt8_6", text: "sentir que a vida vai passando sem me apanhar inteiro/a" },
-      { id: "b2_opt8_7", text: "não consigo ainda nomear bem esse custo" }
+      { optionId: "opt_0204_pilar", label: "Sou a fundação estrutural; os problemas recaem totalmente sobre a minha capacidade de resolver e suportar o peso.", description: "", signalWeights: { liberdade: 1.0, energia: -1.0 }, signalTags: ["pilar_excessivo"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0204_invisivel", label: "Sinto-me utilitário; considero que o que sinto ou preciso não é uma prioridade legítima em casa.", description: "", signalWeights: { apoio: 1.5, vida: -0.5 }, signalTags: ["invisibilidade_afetiva"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
 
-  // ============================================
-  // BLOCO 3 (Só 1 escolha permitida)
-  // ============================================
+  // ==========================================
+  // BLOCO 3: MECÂNICA DO BLOQUEIO
+  // ==========================================
   {
-    id: "b3_q1", blockId: "block_3", maxSelections: 1,
-    text: "Se tivesses de apontar o centro mais forte do que te está a bloquear neste momento, qual seria?",
+    questionId: "Q_V3_0301",
+    blockId: "block_3",
+    order: 7,
+    prompt: "Como geres habitualmente a necessidade de mudar quando todas as vias parecem esgotadas?",
+    helperText: "Análise da tua estratégia de lidar face à estagnação severa.",
+    inferentialPurpose: "Avaliação da resposta de coping (defesa do psiquismo).",
+    targetSignals: ["energia", "direcao", "baixa_diferenciacao"],
+    validationRole: "Gauge de inércia",
+    legacySourceIds: ["Q_DIS_FAM_01"],
+    active: true,
     options: [
-      { id: "b3_opt1_1", text: "falta de meios" },
-      { id: "b3_opt1_2", text: "falta de apoio ou base afetiva" },
-      { id: "b3_opt1_3", text: "falta de liberdade" },
-      { id: "b3_opt1_4", text: "falta de energia" },
-      { id: "b3_opt1_5", text: "falta de direção" },
-      { id: "b3_opt1_6", text: "falta de vida" },
-      { id: "b3_opt1_7", text: "continua demasiado misturado para eu reduzir a uma coisa só" }
+      { optionId: "opt_0301_distratores", label: "Acelero o ruído produtivo ou as distrações para evitar ouvir silêncios difíceis à noite.", description: "", signalWeights: { baixa_diferenciacao: 0.8 }, signalTags: ["coping_fuga"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0301_justifica", label: "Uso obstáculos reais (filhos, falta de dinheiro) como a justificação absoluta que finaliza o assunto.", description: "", signalWeights: { energia: -0.5 }, signalTags: ["coping_racionalizacao"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0301_isolamento", label: "Recolho-me e resigno-me; conservo apenas o mínimo de energia funcional possível.", description: "", signalWeights: { energia: 1.0, vida: -0.5 }, signalTags: ["coping_apatia"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
   {
-    id: "b3_q2", blockId: "block_3", maxSelections: 1,
-    text: "Se esta semana pudesses resolver só uma dimensão e sentir logo diferença real, qual seria?",
+    questionId: "Q_V3_0302",
+    blockId: "block_3",
+    order: 8,
+    prompt: "Acreditas que, secretamente, alguma parte tua encontra conforto ou segurança no facto de ainda não conseguires mudar?",
+    helperText: "O conhecido, mesmo em sofrimento crónico, costuma ser preferível à mudança vertiginosa.",
+    inferentialPurpose: "Avaliação do benefício secundário do bloqueio.",
+    targetSignals: ["liberdade", "vida"],
+    validationRole: "Benefícios ocultos",
+    legacySourceIds: ["Q_BLK_03"],
+    active: true,
     options: [
-      { id: "b3_opt2_1", text: "ganhar margem material" },
-      { id: "b3_opt2_2", text: "sentir mais apoio, ligação ou retaguarda" },
-      { id: "b3_opt2_3", text: "recuperar liberdade de decisão e movimento" },
-      { id: "b3_opt2_4", text: "recuperar energia para agir" },
-      { id: "b3_opt2_5", text: "ganhar clareza sobre o rumo" },
-      { id: "b3_opt2_6", text: "voltar a sentir mais vida, presença ou chama" },
-      { id: "b3_opt2_7", text: "não sei qual destravaria mais" }
+      { optionId: "opt_0302_conforto", label: "Sim, há um porto seguro previsível; enfrentar o desconhecido exige uma energia brutal que eu prefiro não testar agora.", description: "", signalWeights: { liberdade: -0.5, energia: -0.5 }, signalTags: ["ganho_secundario_inercia"], disambiguatesWhat: ["resistência_genuina_vs_tática"], allowsBranchingTo: [] },
+      { optionId: "opt_0302_repulsa", label: "Não há o mínimo de segurança nisto, é puramente parede insuperável limpa e logística; detesto todas as partes do facto de estar parado.", description: "", signalWeights: { meios: 1.0 }, signalTags: ["parede_logistica_exclusiva"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
   {
-    id: "b3_q3", blockId: "block_3", maxSelections: 1,
-    text: "O que te parece mais causa do que consequência?",
+    questionId: "Q_V3_0303",
+    blockId: "block_3",
+    order: 9,
+    prompt: "Nas decisões mais estruturantes do último ano, quem ou que elemento tem tido de forma tácita o poder de veto final?",
+    helperText: "Quem cancelou os avanços.",
+    inferentialPurpose: "Entender locus externo da autoridade percepcionada.",
+    targetSignals: ["liberdade", "apoio", "energia"],
+    validationRole: "Autoridade percepcionada",
+    legacySourceIds: ["Q_BLK_02"],
+    active: true,
     options: [
-      { id: "b3_opt3_1", text: "a falta de meios está a contaminar o resto" },
-      { id: "b3_opt3_2", text: "a falta de apoio ou sustentação está a contaminar o resto" },
-      { id: "b3_opt3_3", text: "o excesso de condicionamento está a contaminar o resto" },
-      { id: "b3_opt3_4", text: "o desgaste está a contaminar o resto" },
-      { id: "b3_opt3_5", text: "a falta de direção está a contaminar o resto" },
-      { id: "b3_opt3_6", text: "a perda de vitalidade está a contaminar o resto" },
-      { id: "b3_opt3_7", text: "não consigo ainda distinguir bem causa de consequência" }
-    ]
-  },
-  {
-    id: "b3_q4", blockId: "block_3", maxSelections: 1,
-    text: "Qual destas sentes mais como resultado de outras coisas, e não como origem?",
-    options: [
-      { id: "b3_opt4_1", text: "falta de meios" },
-      { id: "b3_opt4_2", text: "falta de apoio ou estrutura afetiva" },
-      { id: "b3_opt4_3", text: "falta de liberdade" },
-      { id: "b3_opt4_4", text: "falta de energia" },
-      { id: "b3_opt4_5", text: "falta de direção" },
-      { id: "b3_opt4_6", text: "falta de vida" },
-      { id: "b3_opt4_7", text: "não sei distinguir" }
-    ]
-  },
-  {
-    id: "b3_q5", blockId: "block_3", maxSelections: 1,
-    text: "O que te dói mais no concreto da tua vida atual?",
-    options: [
-      { id: "b3_opt5_1", text: "não conseguir mexer-me por falta de margem" },
-      { id: "b3_opt5_2", text: "não me sentir suficientemente acompanhado/a ou sustentado/a" },
-      { id: "b3_opt5_3", text: "viver demasiado condicionado/a ou apertado/a" },
-      { id: "b3_opt5_4", text: "sentir-me cansado/a demais para mudar" },
-      { id: "b3_opt5_5", text: "não conseguir ver um caminho convincente" },
-      { id: "b3_opt5_6", text: "sentir que a vida me passa ao lado ou me apanha a meio" },
-      { id: "b3_opt5_7", text: "é a combinação disto tudo que mais me dói" }
-    ]
-  },
-  {
-    id: "b3_q6", blockId: "block_3", maxSelections: 1,
-    text: "O que sentes que estás mais a perder enquanto isto se mantém?",
-    options: [
-      { id: "b3_opt6_1", text: "oportunidades práticas" },
-      { id: "b3_opt6_2", text: "sensação de vínculo, apoio ou pertença" },
-      { id: "b3_opt6_3", text: "autonomia para viver à minha maneira" },
-      { id: "b3_opt6_4", text: "força e capacidade de ação" },
-      { id: "b3_opt6_5", text: "tempo e orientação" },
-      { id: "b3_opt6_6", text: "intensidade, presença ou vida" },
-      { id: "b3_opt6_7", text: "ainda não sei dizer" }
-    ]
-  },
-  {
-    id: "b3_q7", blockId: "block_3", maxSelections: 1,
-    text: "Se nada mudar nos próximos tempos, o que mais temes que se agrave?",
-    options: [
-      { id: "b3_opt7_1", text: "continuar sem base material suficiente" },
-      { id: "b3_opt7_2", text: "sentir-me ainda mais só ou sem retaguarda" },
-      { id: "b3_opt7_3", text: "ficar ainda mais preso/a a uma vida pouco moldável" },
-      { id: "b3_opt7_4", text: "entrar num desgaste mais fundo" },
-      { id: "b3_opt7_5", text: "perder ainda mais clareza sobre o rumo" },
-      { id: "b3_opt7_6", text: "habituar-me a viver com pouca vida dentro" },
-      { id: "b3_opt7_7", text: "nem sei qual destes me assusta mais" }
-    ]
-  },
-  {
-    id: "b3_q8", blockId: "block_3", maxSelections: 1,
-    text: "Sem pensar demasiado, qual destas palavras te parece mais perto do teu problema nuclear?",
-    options: [
-      { id: "b3_opt8_1", text: "margem" },
-      { id: "b3_opt8_2", text: "apoio" },
-      { id: "b3_opt8_3", text: "liberdade" },
-      { id: "b3_opt8_4", text: "energia" },
-      { id: "b3_opt8_5", text: "rumo" },
-      { id: "b3_opt8_6", text: "vida" },
-      { id: "b3_opt8_7", text: "névoa" }
-    ]
-  },
-  {
-    id: "b3_q9", blockId: "block_3", maxSelections: 1,
-    text: "Qual destas frases te soa mais verdadeira neste momento?",
-    options: [
-      { id: "b3_opt9_1", text: "a minha vida está demasiado limitada por falta de meios" },
-      { id: "b3_opt9_2", text: "a minha vida está demasiado exposta por falta de base afetiva" },
-      { id: "b3_opt9_3", text: "a minha vida está demasiado condicionada para eu a moldar como queria" },
-      { id: "b3_opt9_4", text: "a minha vida está demasiado desgastada para eu conseguir puxar por ela" },
-      { id: "b3_opt9_5", text: "a minha vida está demasiado sem rumo para eu conseguir avançar" },
-      { id: "b3_opt9_6", text: "a minha vida está demasiado apagada para eu a sentir realmente minha" },
-      { id: "b3_opt9_7", text: "a minha vida está demasiado misturada para eu perceber o núcleo" }
-    ]
-  },
-  {
-    id: "b3_q10", blockId: "block_3", maxSelections: 1,
-    text: "Se tivesses de resumir o teu travão principal numa frase curta, qual destas escolherias?",
-    options: [
-      { id: "b3_opt10_1", text: "falta-me margem para mexer na vida" },
-      { id: "b3_opt10_2", text: "falta-me base para não carregar tudo sozinho/a" },
-      { id: "b3_opt10_3", text: "falta-me liberdade para viver mais à minha maneira" },
-      { id: "b3_opt10_4", text: "falta-me energia para sair do sítio" },
-      { id: "b3_opt10_5", text: "falta-me direção para saber onde investir-me" },
-      { id: "b3_opt10_6", text: "falta-me vida para sentir que isto vale mesmo a pena" },
-      { id: "b3_opt10_7", text: "falta-me clareza para perceber o centro disto tudo" }
+      { optionId: "opt_0303_outro", label: "As necessidades (e as reações emocionais esperadas) de terceiros.", description: "", signalWeights: { liberdade: 1.2, apoio: 0.5 }, signalTags: ["locus_relacional"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0303_logistica", label: "A implacabilidade fria dos números ou da matriz económica/habitacional partilhada.", description: "", signalWeights: { meios: 1.2 }, signalTags: ["locus_meios"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0303_medo", label: "O meu próprio pragmatismo temeroso e o instinto cético de não expor o flanco ao ridículo e ao insucesso.", description: "", signalWeights: { direcao: 1.0 }, signalTags: ["locus_interno_medo"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
 
-  // ============================================
-  // BLOCO 4
-  // ============================================
+  // ==========================================
+  // BLOCO 4: CUSTOS E DANOS
+  // ==========================================
   {
-    id: "b4_q1", blockId: "block_4", maxSelections: 2,
-    text: "Quando o dinheiro pesa na tua vida, o que é que ele representa mais para ti?",
+    questionId: "Q_V3_0401",
+    blockId: "block_4",
+    order: 10,
+    prompt: "Qual área está invisivelmente a pagar o preço diário deste teu compasso de espera?",
+    helperText: "A inércia debita fatura numa dimensão específica; escolhe a que sangra mais no silêncio.",
+    inferentialPurpose: "Evidência somática e relacional dos danos acumulados.",
+    targetSignals: ["vida", "direcao", "energia", "apoio"],
+    validationRole: "Custo irreversível prático",
+    legacySourceIds: ["Q_COS_01"],
+    active: true,
     options: [
-      { id: "b4_opt1_1", text: "margem para decidir e mexer na vida" },
-      { id: "b4_opt1_2", text: "segurança para não viver em contenção" },
-      { id: "b4_opt1_3", text: "prova de que consigo construir a minha vida" },
-      { id: "b4_opt1_4", text: "liberdade para não depender tanto" },
-      { id: "b4_opt1_5", text: "possibilidade de avançar sem me sentir travado/a" },
-      { id: "b4_opt1_6", text: "não sei se o problema é o dinheiro ou o que ele simboliza" }
+      { optionId: "opt_0401_identidade", label: "O distanciamento de mim mesmo: não me reconheço na apatia com que deixo os dias escorrerem.", description: "", signalWeights: { vida: 1.5, baixa_diferenciacao: 0.8 }, signalTags: ["perda_identidade"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0401_corpo", label: "O corpo: a fadiga está cronificada, a ansiedade estruturou-se na minha postura e o sono já não repara.", description: "", signalWeights: { energia: 1.5, meios: 0.5 }, signalTags: ["perda_somatica"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0401_relacional", label: "A paciência e o afeto: acumulo um cinismo latente com todos, diminuindo a empatia verdadeira pelas pessoas que me rodeiam.", description: "", signalWeights: { apoio: -1.0, liberdade: 0.5 }, signalTags: ["perda_afetiva"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
   {
-    id: "b4_q2", blockId: "block_4", maxSelections: 2,
-    text: "Quando pensas na tua casa ou no espaço onde vives, o que dói mais se isso não estiver bem?",
+    questionId: "Q_V3_0402",
+    blockId: "block_4",
+    order: 11,
+    prompt: "Se o cenário em que passaste a semana se mantiver intocável por mais três ou cinco anos, o teu maior receio é acabar:",
+    helperText: "Identifica a consequência a longo prazo",
+    inferentialPurpose: "Testar receio ontológico.",
+    targetSignals: ["vida", "direcao", "energia"],
+    validationRole: "Validação do abismo",
+    legacySourceIds: ["Q_COS_02"],
+    active: true,
     options: [
-      { id: "b4_opt2_1", text: "não sentir base nem estabilidade" },
-      { id: "b4_opt2_2", text: "não sentir que aquele espaço é realmente meu" },
-      { id: "b4_opt2_3", text: "não poder moldar o espaço à minha maneira" },
-      { id: "b4_opt2_4", text: "sentir-me provisório/a ou mal instalado/a" },
-      { id: "b4_opt2_5", text: "sentir que a minha vida ainda não assentou" },
-      { id: "b4_opt2_6", text: "não sei se é sobre casa ou sobre outra coisa por baixo" }
-    ]
-  },
-  {
-    id: "b4_q3", blockId: "block_4", maxSelections: 2,
-    text: "Quando o trabalho te pesa, o que sentes mais?",
-    options: [
-      { id: "b4_opt3_1", text: "estou a dar demasiado e a receber pouco" },
-      { id: "b4_opt3_2", text: "estou cansado/a de funcionar sem sentir avanço" },
-      { id: "b4_opt3_3", text: "o trabalho ocupa-me, mas não me faz sentir mais dono/a da vida" },
-      { id: "b4_opt3_4", text: "o que faço não está a abrir caminho suficiente" },
-      { id: "b4_opt3_5", text: "sinto-me preso/a ao esforço, sem aceleração real" },
-      { id: "b4_opt3_6", text: "não sei se é o trabalho em si ou o que ele me falha em devolver" }
-    ]
-  },
-  {
-    id: "b4_q4", blockId: "block_4", maxSelections: 2,
-    text: "Quando sentes a rotina a apertar, o que é que ela está a matar mais em ti?",
-    options: [
-      { id: "b4_opt4_1", text: "tempo para viver com mais margem" },
-      { id: "b4_opt4_2", text: "espontaneidade e liberdade" },
-      { id: "b4_opt4_3", text: "energia e frescura mental" },
-      { id: "b4_opt4_4", text: "entusiasmo e vontade" },
-      { id: "b4_opt4_5", text: "presença, intensidade ou brilho" },
-      { id: "b4_opt4_6", text: "nem sei se é rotina; é mais uma sensação de vida demasiado funcional" }
-    ]
-  },
-  {
-    id: "b4_q5", blockId: "block_4", maxSelections: 2,
-    text: "Quando pensas no tempo a passar, o que te inquieta mais?",
-    options: [
-      { id: "b4_opt5_1", text: "continuar sem consolidar a vida como queria" },
-      { id: "b4_opt5_2", text: "adiar demasiado decisões importantes" },
-      { id: "b4_opt5_3", text: "perder energia ou força para mudar mais tarde" },
-      { id: "b4_opt5_4", text: "sentir que a vida vai andando sem me apanhar inteiro/a" },
-      { id: "b4_opt5_5", text: "chegar mais à frente com sensação de desperdício" },
-      { id: "b4_opt5_6", text: "não sei se é medo do tempo ou da minha própria inércia" }
-    ]
-  },
-  {
-    id: "b4_q6", blockId: "block_4", maxSelections: 2,
-    text: "Se te falta apoio, o que sentes mais em falta?",
-    options: [
-      { id: "b4_opt6_1", text: "alguém com quem realmente contar" },
-      { id: "b4_opt6_2", text: "proximidade emocional consistente" },
-      { id: "b4_opt6_3", text: "sensação de pertença" },
-      { id: "b4_opt6_4", text: "uma base que me ajude a aguentar o peso" },
-      { id: "b4_opt6_5", text: "menos solidão por detrás do funcionamento normal" },
-      { id: "b4_opt6_6", text: "não sei se me falta apoio ou se já não espero recebê-lo" }
-    ]
-  },
-  {
-    id: "b4_q7", blockId: "block_4", maxSelections: 2,
-    text: "Quando sentes que há desejo ou vida soterrada em ti, isso aparece mais como:",
-    options: [
-      { id: "b4_opt7_1", text: "coisas que queria viver e fui adiando" },
-      { id: "b4_opt7_2", text: "vontade de sair de um modo de vida demasiado gasto" },
-      { id: "b4_opt7_3", text: "necessidade de voltar a sentir magnetismo ou intensidade" },
-      { id: "b4_opt7_4", text: "vontade de me sentir mais vivo/a, presente ou desejante" },
-      { id: "b4_opt7_5", text: "sensação de que uma parte importante de mim está em exílio" },
-      { id: "b4_opt7_6", text: "não sei se é desejo real ou só fuga ao que tenho" }
-    ]
-  },
-  {
-    id: "b4_q8", blockId: "block_4", maxSelections: 2,
-    text: "No envelhecimento, o que te custa imaginar perder?",
-    options: [
-      { id: "b4_opt8_1", text: "tempo útil para corrigir rumo" },
-      { id: "b4_opt8_2", text: "margem para arriscar e recomeçar" },
-      { id: "b4_opt8_3", text: "vitalidade ou presença" },
-      { id: "b4_opt8_4", text: "atratividade, magnetismo ou chama" },
-      { id: "b4_opt8_5", text: "possibilidade de viver o que ainda ficou por viver" },
-      { id: "b4_opt8_6", text: "não sei se me assusta envelhecer ou continuar assim" }
-    ]
-  },
-  {
-    id: "b4_q9", blockId: "block_4", maxSelections: 2,
-    text: "Se pensas em ‘vida adiada’, qual destas frases te parece mais certa?",
-    options: [
-      { id: "b4_opt9_1", text: "estou demasiado ocupado/a a aguentar para conseguir viver" },
-      { id: "b4_opt9_2", text: "ando a cumprir sem sentir que estou a avançar" },
-      { id: "b4_opt9_3", text: "muita coisa em mim ficou para depois e continua lá" },
-      { id: "b4_opt9_4", text: "a minha vida exterior existe, mas falta-me ligação interior a ela" },
-      { id: "b4_opt9_5", text: "sinto que a vida que vivo está aquém da que sinto que me correspondia" },
-      { id: "b4_opt9_6", text: "não sei se é vida adiada ou incapacidade de escolher uma vida" }
-    ]
-  },
-  {
-    id: "b4_q10", blockId: "block_4", maxSelections: 2,
-    text: "Quando sentes que a vida não está como devia, o que te pesa mais como imagem interior?",
-    options: [
-      { id: "b4_opt10_1", text: "estou sem base suficiente" },
-      { id: "b4_opt10_2", text: "estou sem lugar suficientemente meu" },
-      { id: "b4_opt10_3", text: "estou sem avanço suficiente" },
-      { id: "b4_opt10_4", text: "estou sem rumo suficientemente claro" },
-      { id: "b4_opt10_5", text: "estou sem vida suficiente dentro da vida que tenho" },
-      { id: "b4_opt10_6", text: "não consigo ainda traduzir isso numa imagem concreta" }
-    ]
-  },
-  {
-    id: "b4_q11", blockId: "block_4", maxSelections: 2,
-    text: "Qual destas mudanças teria mais força simbólica para te devolver ar?",
-    options: [
-      { id: "b4_opt11_1", text: "ganhar margem financeira real" },
-      { id: "b4_opt11_2", text: "mudar de casa ou de condições de vida" },
-      { id: "b4_opt11_3", text: "sentir mais apoio ou menos solidão estrutural" },
-      { id: "b4_opt11_4", text: "encontrar trabalho/caminho com mais avanço" },
-      { id: "b4_opt11_5", text: "recuperar energia e presença" },
-      { id: "b4_opt11_6", text: "voltar a sentir mais chama, desejo ou vida" },
-      { id: "b4_opt11_7", text: "não sei qual destas mexeria mais fundo" }
-    ]
-  },
-  {
-    id: "b4_q12", blockId: "block_4", maxSelections: 2,
-    text: "No fundo, o que sentes que está mais em risco se nada mudar?",
-    options: [
-      { id: "b4_opt12_1", text: "a construção concreta da minha vida" },
-      { id: "b4_opt12_2", text: "a consolidação da minha base" },
-      { id: "b4_opt12_3", text: "a minha autonomia real" },
-      { id: "b4_opt12_4", text: "a minha força para agir" },
-      { id: "b4_opt12_5", text: "o meu rumo" },
-      { id: "b4_opt12_6", text: "a minha parte mais viva" },
-      { id: "b4_opt12_7", text: "ainda não sei nomear isso" }
+      { optionId: "opt_0402_funcional", label: "Assegurado funcionalmente, mas totalmente ausente e esvaziado de curiosidade pela vida.", description: "", signalWeights: { vida: 1.5, direcao: 1.0 }, signalTags: ["futuro_zombie"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0402_falho", label: "Na fase final das minhas janelas de oportunidade produtivas, lamentando acriticamente a estrutura de dependência em que decidi morar.", description: "", signalWeights: { meios: 0.8, liberdade: 1.0 }, signalTags: ["futuro_dependente"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
 
-  // ============================================
-  // BLOCO 5 - Defensas
-  // ============================================
   {
-    id: "b5_q1", blockId: "block_5", maxSelections: 2,
-    text: "Qual tem sido o teu principal refúgio instintivo para não colapsar sob esta tensão?",
+    questionId: "Q_V3_0403",
+    blockId: "block_4",
+    order: 12,
+    prompt: "Se avançasses com a decisão difícil que imaginas, que consequência projetada te trava quase automaticamente?",
+    helperText: "Identificar o limitador do salto no momento real.",
+    inferentialPurpose: "Evidência da erosão da margem psicológica de manobra.",
+    targetSignals: ["energia", "apoio"],
+    validationRole: "Validação somática 2",
+    legacySourceIds: ["Q_COS_03"],
+    active: true,
     options: [
-      { id: "b5_opt1_1", text: "Trabalho incessante ou necessidade prática de ocupação contínua" },
-      { id: "b5_opt1_2", text: "Isolamento progressivo: fechamento a convívios ou opiniões" },
-      { id: "b5_opt1_3", text: "Projeção em terceiros: a culpa recai quase sempre em limitações externas" },
-      { id: "b5_opt1_4", text: "Contenção absoluta das emoções fora do que é considerado funcional" },
-      { id: "b5_opt1_5", text: "Procura compulsiva de distradores para evitar o peso central" },
-      { id: "b5_opt1_6", text: "Não me sinto em modo de refúgio" }
+      { optionId: "opt_0403_impaciente", label: "Sim, há um grau de reatividade passiva ou fechamento rápido face ao que os outros partilham; sinto-me subitamente indisponível para o 'normal'.", description: "", signalWeights: { energia: 1.0, apoio: -1.0 }, signalTags: ["esgotamento_paciencia"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0403_dissociado", label: "Não recuso, apenas finjo a presença e aceno em concordância cega automática sem rasto vital de ligação empática.", description: "", signalWeights: { baixa_diferenciacao: 1.0 }, signalTags: ["presenca_automatica"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
 
-  // ============================================
-  // BLOCO 6 - Latência
-  // ============================================
+  // ==========================================
+  // BLOCO 5: SIGNIFICADO E SÍMBOLO
+  // ==========================================
   {
-    id: "b6_q1", blockId: "block_6", maxSelections: 2,
-    text: "Qual é o peso silencioso que mais consome a tua retaguarda neurológica?",
+    questionId: "Q_V3_0501",
+    blockId: "block_5",
+    order: 12,
+    prompt: "Se removêssemos todas as justificações lógicas, que metáfora exprime melhor a dor central do que sentes?",
+    helperText: "Despe o problema do ruído das faturas e dos colegas.",
+    inferentialPurpose: "Associação latente psicanalítica das dores da base.",
+    targetSignals: ["baixa_diferenciacao"],
+    validationRole: "Symbolic bridge",
+    legacySourceIds: ["Q_VAL_FIN_01"],
+    active: true,
     options: [
-      { id: "b6_opt1_1", text: "A insónia persistente ou a má qualidade do descanso" },
-      { id: "b6_opt1_2", text: "A irritabilidade de resposta cega ao toque mais leve" },
-      { id: "b6_opt1_3", text: "Um silenciamento perigoso face a coisas que me deviam importar" },
-      { id: "b6_opt1_4", text: "Uma estranha resignação (deixar de fazer perguntas)" },
-      { id: "b6_opt1_5", text: "Fricção somática e tensões físicas corporificadas" }
+      { optionId: "opt_0501_correntes", label: "A sensação de estar atrelado e de não dispor do direito básico de ditar as próprias fronteiras laborais ou afetivas.", description: "", signalWeights: { liberdade: 1.5 }, signalTags: ["simbologia_sufoco"], disambiguatesWhat: ["liberdade vs. meios"], allowsBranchingTo: [] },
+      { optionId: "opt_0501_abismo", label: "Um quadro em branco descolorido e extenso: não é aperto, é uma falta avassaladora de coordenadas e sentido.", description: "", signalWeights: { direcao: 1.5, vida: -0.5 }, signalTags: ["simbologia_extravio"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0501_tenda", label: "Sob a iminência de quedar num espaço sem rede de proteção; estar sempre entregue a dinâmicas instáveis e sem colo seguro.", description: "", signalWeights: { apoio: 1.5 }, signalTags: ["simbologia_orfandade"], disambiguatesWhat: [], allowsBranchingTo: [] }
+    ]
+  },
+  {
+    questionId: "Q_V3_0502",
+    blockId: "block_5",
+    order: 13,
+    prompt: "A manutenção passiva deste conflito diário ataca principalmente a tua convicção sobre o teu próprio valor, a tua sorte, ou a perspetiva de capacidade de esforço?",
+    helperText: "Verificamos como o problema tem moldado a tua auto-avaliação psíquica.",
+    inferentialPurpose: "Mapeamento subcortical.",
+    targetSignals: ["liberdade", "vida"],
+    validationRole: "Symbolic evaluation",
+    legacySourceIds: ["Q_DIS_GEN_01"],
+    active: true,
+    options: [
+      { optionId: "opt_0502_valor", label: "Sinto que, se tolero isto tanto tempo, no fundo interiorizei que não tenho força interior para exigir nada superior a esta norma.", description: "", signalWeights: { vida: 1.0, liberdade: 1.0 }, signalTags: ["auto_desvalorizacao"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0502_esquecimento", label: "Sinto um cinismo cravado contra a própria ideia de 'mérito'. Acredito cada vez menos na arquitetura de promessas onde outrora quis investir.", description: "", signalWeights: { apoio: -1.0, energia: 0.5 }, signalTags: ["ressentimento_geral"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
 
-  // ============================================
-  // BLOCO 7 - Desempate Rival
-  // ============================================
   {
-    id: "b7_q1", blockId: "block_7", maxSelections: 1,
-    text: "Se fôssemos a um tribunal interno, qual seria o derradeiro conflito insolúvel em ti?",
+    questionId: "Q_V3_0503",
+    blockId: "block_5",
+    order: 15,
+    prompt: "Quando visualizas mentalmente a linha temporal do teu futuro a partir das amarras do problema atual, o quadro é um muro cego, um espelho circular ou uma neblina infinita?",
+    helperText: "Configuração subconsciente da perceção do tempo.",
+    inferentialPurpose: "Interpretação do bloqueio futuro (Fechado vs Desorientado).",
+    targetSignals: ["direcao", "liberdade"],
+    validationRole: "Time perception symbol",
+    legacySourceIds: ["Q_BLK_11"],
+    active: true,
     options: [
-      { id: "b7_opt1_liberdade_vs_meios", text: "O desejo de arriscar por liberdade vs O terror de morrer à míngua sem estrutura material" },
-      { id: "b7_opt1_liberdade_vs_apoio", text: "O grito de exaustão clamando rutura vs O medo avassalador de cortar apoio e ficar só" },
-      { id: "b7_opt1_vida_vs_energia", text: "A necessidade de sentido vital superior vs A atração pelo conforto da paralisia" },
-      { id: "b7_opt1_nevoa", text: "Estes atritos não refletem na integra a minha guerra" }
+      { optionId: "opt_0503_muro", label: "Muro de cimento fechado. O espaço futuro está rígido, definido por impossibilidades práticas incontornáveis.", description: "", signalWeights: { meios: 1.0, liberdade: 1.0 }, signalTags: ["simbologia_muro_logistico"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0503_nevoa", label: "Neblina circular sem fim. Trata-se de uma desorientação estrutural onde faltam os pontos de ancoragem lógicos para decidir o próximo passo.", description: "", signalWeights: { baixa_diferenciacao: 1.0, direcao: 1.0 }, signalTags: ["simbologia_neblina_direccional"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0503_descarte", label: "Prateleira num quarto escuro. Sinto um receio fundo latente de vir simplesmente a perder o lugar de relevância ou ser lentamente descartado pelos outros.", description: "", signalWeights: { vida: 1.5, apoio: 1.5 }, signalTags: ["simbologia_descartabilidade", "medo_perder_lugar"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
 
-  // ============================================
-  // BLOCO 8 - Procrastinação e Ação Adiada
-  // ============================================
+  // ==========================================
+  // BLOCO 6: CENÁRIO TEMIDO
+  // ==========================================
   {
-    id: "b8_q1", blockId: "block_8", maxSelections: 1,
-    text: "O que justificas sempre perante ti próprio/a para tolerar o que adias estruturalmente?",
+    questionId: "Q_V3_0601",
+    blockId: "block_6",
+    order: 14,
+    prompt: "Se avançasses a fundo na resolução definitiva disto hoje, a catástrofe que imediatamente antecipas é dominada por que consequência?",
+    helperText: "O que diz o advogado de defesa do medo?",
+    inferentialPurpose: "Identificar eixo limitativo na hora da tomada de risco.",
+    targetSignals: ["liberdade", "direcao"],
+    validationRole: "Stress testing medo",
+    legacySourceIds: ["Q_COC_01"],
+    active: true,
     options: [
-      { id: "b8_opt1_1", text: "«Ainda não tenho margem de conforto/risco suficiente»" },
-      { id: "b8_opt1_2", text: "«Não devia abandonar a responsabilidade assumida.»" },
-      { id: "b8_opt1_3", text: "«A energia que tenho mal chega para cumprir.»" },
-      { id: "b8_opt1_4", text: "«Tenho demasiado medo de uma transição para o vazio.»" },
-      { id: "b8_opt1_5", text: "«Sinto-me desmobilizado/a por não ver clareza na etapa que se segue.»" }
+      { optionId: "opt_0601_culpa", label: "O peso de falhar o compromisso com quem dependia de mim, e ter de conviver diariamente com essa culpa na forma como os outros me vão olhar.", description: "", signalWeights: { liberdade: 1.5, apoio: 0.5 }, signalTags: ["culpa_social", "traicao"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0601_falha", label: "A possibilidade real de fracassar logisticamente e acabar desamparado numa dependência funcional pior do que a inicial.", description: "", signalWeights: { meios: 1.5, energia: -0.5 }, signalTags: ["ruina_logistica"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0601_substituicao", label: "No fundo, o medo de ser eventualmente trocado, substituído de forma indiferente ou de vir a perder de vez a base relacional com o meu parceiro.", description: "", signalWeights: { apoio: 2.0, vida: 1.0 }, signalTags: ["temor_substituicao", "medo_perder_parceiro"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0601_solidão", label: "Errar a avaliação do meu suporte social e constatar que poderei ficar absolutamente só após atuar.", description: "", signalWeights: { apoio: 1.5 }, signalTags: ["temor_abandono"], disambiguatesWhat: [], allowsBranchingTo: [] }
+    ]
+  },
+  {
+    questionId: "Q_V3_0602",
+    blockId: "block_6",
+    order: 15,
+    prompt: "Neste balanço diário, o que te assombra estruturalmente mais?",
+    helperText: "Medo crónico do isolamento vs esgotamento pragmático.",
+    inferentialPurpose: "Verificar a dominância do cansaço.",
+    targetSignals: ["direcao", "energia"],
+    validationRole: "Choice constraint",
+    legacySourceIds: ["Q_BLK_08"],
+    active: true,
+    options: [
+      { optionId: "opt_0602_esgotar", label: "A progressão cega para a exaustão física total onde depois já não existam recursos do esqueleto orgânico para manter a linha e nada resista.", description: "", signalWeights: { energia: 1.5 }, signalTags: ["medo_exaustao_extrema"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0602_errar", label: "O risco instável severo do fracasso exterior e de entrar num processo longo de colapso irreversível caso solte as defesas atuais.", description: "", signalWeights: { meios: 1.0, liberdade: 1.0 }, signalTags: ["medo_colapso_imprevisivel"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
 
-  // ============================================
-  // BLOCO 9 - Escala Existencial
-  // ============================================
+  // ==========================================
+  // BLOCO 7: DESEMPATE E EIXOS RIVAIS
+  // ==========================================
   {
-    id: "b9_q1", blockId: "block_9", maxSelections: 1,
-    text: "Se existisse garantia absoluta de zero repercussões colaterais amanhã. O que tomarias de assalto para ti?",
+    questionId: "Q_V3_0701",
+    blockId: "block_7",
+    order: 16,
+    prompt: "Se tivesses de optar cirurgicamente entre o sacrifício de uma ou outra segurança, qual caminho escolherias?",
+    helperText: "Confronto analítico direto: Onde cedes mais depressa?",
+    inferentialPurpose: "Testar Tolerância a risco vital (Vida vs Segurança).",
+    targetSignals: ["vida", "energia", "meios"],
+    validationRole: "Rival Hypothesis Testing",
+    legacySourceIds: ["Q_DIS_GEN_02"],
+    active: true,
     options: [
-      { id: "b9_opt1_1", text: "Uma autonomia de execução livre (ditar os termos do que faço)" },
-      { id: "b9_opt1_2", text: "Uma paragem colossal e impune de todas as frentes de stresse mental" },
-      { id: "b9_opt1_3", text: "O regresso à base limpa de um núcleo íntimo/familiar" },
-      { id: "b9_opt1_4", text: "Uma transição disruptiva drástica à caça do instinto vital perdido" }
+      { optionId: "opt_0701_vida", label: "Tolerar forte risco logístico em desvantagem, se isso me entregar autonomia vital profunda e me forçar a agir sem redes artificiais de amortecimento.", description: "", signalWeights: { vida: 2.0, meios: -1.0 }, signalTags: ["prioriza_vitalidade"], disambiguatesWhat: ["vida vs meios"], allowsBranchingTo: [] },
+      { optionId: "opt_0701_paz", label: "Manter o sacrifício da curiosidade vital e de algumas liberdades, garantindo assim que a estabilidade base funcional minha e dos diretos nunca é estilhaçada.", description: "", signalWeights: { energia: 1.0, vida: -2.0 }, signalTags: ["prioriza_contencao_passiva"], disambiguatesWhat: [], allowsBranchingTo: [] }
+    ]
+  },
+  {
+    questionId: "Q_V3_0702",
+    blockId: "block_7",
+    order: 17,
+    prompt: "Acreditas que, com mais de meio percurso feito, a serenidade funcional que deténs já é suficiente face ao vazio desnecessário e fútil de estar sempre a mudar de direção?",
+    helperText: "Procura distinguir a paz amadurecida do cinismo derrotista.",
+    inferentialPurpose: "Desempatar inércia de aceitação saudável vs apatia depressiva.",
+    targetSignals: ["direcao", "energia", "apoio"],
+    validationRole: "Teste de Conformato",
+    legacySourceIds: ["Q_BLK_10"],
+    active: true,
+    options: [
+      { optionId: "opt_0702_amadurecido", label: "Sim, é uma leitura pacífica e aceite sem amargura. Geri as minhas perdas de forma adulta e priorizei uma tranquilidade constante estruturante e sustentável.", description: "", signalWeights: { energia: 0.5, direcao: 1.0 }, signalTags: ["resignacao_pacifica"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0702_cinico", label: "Sinceramente, não é paz; é apenas um hábito instalacionista cínico para me esquivar às falhas e fingir que já não espero mais nada das perspetivas estruturais originais.", description: "", signalWeights: { vida: 1.5, baixa_diferenciacao: 1.0 }, signalTags: ["resignacao_cinica"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   },
 
-  // ============================================
-  // BLOCO 10 - Fecho Prático
-  // ============================================
+  // ==========================================
+  // BLOCO 8: VIDA DESEJADA
+  // ==========================================
   {
-    id: "b10_q1", blockId: "block_10", maxSelections: 1,
-    text: "Qual é o verdadeiro Índice de Prontidão para operar neste limite?",
+    questionId: "Q_V3_0801",
+    blockId: "block_8",
+    order: 18,
+    prompt: "A tua ambição genuína, despida de formatações protéticas alheias e medos utilitários imediatos, aponta para onde?",
+    helperText: "Qual a direção curativa para os estragos atuais?",
+    inferentialPurpose: "Alinhamento construtivo positivo - eixo redentor.",
+    targetSignals: ["vida", "direcao", "liberdade"],
+    validationRole: "Projeção construtiva",
+    legacySourceIds: ["Q_COS_02"],
+    active: true,
     options: [
-      { id: "b10_opt1_1", text: "Totalmente investido: Preciso de protocolo logístico de resgate ativo agora" },
-      { id: "b10_opt1_2", text: "Téptido: Quero desbravar alternativas mas o meu stresse é funcional no imediato" },
-      { id: "b10_opt1_3", text: "Vigilância pura: Queria uma leitura disto, a ação virá a seu tempo se o cenário se degradar muito mais" }
+      { optionId: "opt_0801_auto", label: "Para a capacidade fundamental de ser soberano sobre os meus critérios analíticos e poder ter impacto direto a partir do meu espaço decisional neutro.", description: "", signalWeights: { liberdade: 1.0 }, signalTags: ["ambicao_soberania"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0801_amor", label: "Para um contexto recíproco relacional mais seguro; procuro restabelecer vínculos profundos base de amparo limpo onde já não me desgaste defender-me constantemente na trincheira invisível...", description: "", signalWeights: { apoio: 1.0 }, signalTags: ["ambicao_vinculo"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0801_paz", label: "Para uma clareira plana; quero restaurar ritmos orgânicos do dia a dia, diminuindo o ruído a zero se preciso. Exijo abrandar fisiologicamente.", description: "", signalWeights: { energia: 1.5 }, signalTags: ["ambicao_quietude"], disambiguatesWhat: [], allowsBranchingTo: [] }
+    ]
+  },
+
+  {
+    questionId: "Q_V3_0802",
+    blockId: "block_8",
+    order: 22,
+    prompt: "No instante imaginário após toda esta logística se desenlear perfeitamente a teu favor, a primeira reação genuína do teu corpo seria:",
+    helperText: "Diz-nos como o corpo assimila a resolução tática.",
+    inferentialPurpose: "Identificar privação primária do sistema.",
+    targetSignals: ["energia", "liberdade"],
+    validationRole: "Projeção imediata de relax",
+    legacySourceIds: ["Q_COS_04"],
+    active: true,
+    options: [
+      { optionId: "opt_0802_sono", label: "Dormir profundamente e parar totalmente as operações numa desconexão curativa de exigências externas.", description: "", signalWeights: { energia: 2.0 }, signalTags: ["ambicao_recuperacao_sono"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0802_acao", label: "Avançar imediatamente para reconstruir a minha rotina e exercer finalmente controlo limpo sobre o meu espaço e tempo.", description: "", signalWeights: { vida: 1.5, liberdade: 1.0 }, signalTags: ["ambicao_criativa_vital"], disambiguatesWhat: [], allowsBranchingTo: [] }
+    ]
+  },
+
+  // ==========================================
+  // BLOCO 9: PRONTIDÃO PARA AGIR
+  // ==========================================
+  {
+    questionId: "Q_V3_0901",
+    blockId: "block_9",
+    order: 19,
+    prompt: "Como avalias objetivamente os teus recursos para enfrentar incerteza significativa hoje?",
+    helperText: "Sinceridade analítica da disposição atual a gerar energia própria no pó.",
+    inferentialPurpose: "Determinar tração e estamina base.",
+    targetSignals: ["baixa_diferenciacao"],
+    validationRole: "Readiness Assessment",
+    legacySourceIds: ["N/A"],
+    active: true,
+    options: [
+      { optionId: "opt_0901_bruto", label: "Estou desgastado, mas disposto a atravessar esse desconforto prático limpo se o modelo no fim for robustamente recompensador na liberdade base do que restará a longo prazo.", description: "", signalWeights: { energia: 1.0 }, signalTags: ["pronto_dor_curativa"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0901_suave", label: "Tenciono ser honesto, não possuo hoje energia tampão excedentária fisiológica de suporte suficiente para aterrarem crises novas estruturais na minha base sem quebrar de vez...", description: "", signalWeights: { baixa_diferenciacao: 1.5, energia: -1.0 }, signalTags: ["sem_estamina_risco"], disambiguatesWhat: [], allowsBranchingTo: [] }
+    ]
+  },
+  {
+    questionId: "Q_V3_0902",
+    blockId: "block_9",
+    order: 20,
+    prompt: "Qual exigência tens quanto à clareza do relatório subjacente gerado a seguir?",
+    helperText: "Define o nível de conforto ou crueza narrativa desejado no resultado. Só para calibrar o tom.",
+    inferentialPurpose: "Avaliação do Modo de Intervenção preferencial.",
+    targetSignals: ["liberdade"],
+    validationRole: "Tone Setup",
+    legacySourceIds: ["N/A"],
+    active: true,
+    options: [
+      { optionId: "opt_0902_corte", label: "Quero uma avaliação clínica fria e direta, capaz de expor contradições das armadilhas habituais que uso como desculpa logóstica na inércia tática.", description: "", signalWeights: { liberdade: 1.0 }, signalTags: ["pede_diagnostico_frio"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_0902_moderado", label: "Procuro sínteses seguras de entendimento sólido sereno, necessito que a validação ressalve o peso óbvio das desvantagens e o meu direito focado à contenção amadurecida dos tempos.", description: "", signalWeights: { energia: 0.5 }, signalTags: ["pede_perspectiva_moderada"], disambiguatesWhat: [], allowsBranchingTo: [] }
+    ]
+  },
+
+  // ==========================================
+  // BLOCO 10: FECHO
+  // ==========================================
+  {
+    questionId: "Q_V3_1001",
+    blockId: "block_10",
+    order: 21,
+    prompt: "Validando tudo o que preencheste, qual identificas ser objetiva e imperdoavelmente o elemento chave do compasso atual de espera final?",
+    helperText: "Conclusão e fixação formal.",
+    inferentialPurpose: "Sinal Forte de Finalização",
+    targetSignals: ["logistica", "afeto", "vitalidade"],
+    validationRole: "Closing anchor",
+    legacySourceIds: ["Q_VAL_FIN_02"],
+    active: true,
+    options: [
+      { optionId: "opt_1001_log", label: "A arquitetura limitativa e dependência material pragmática dos pressupostos logísticos imediatos reais inadiáveis e utilitários limitantes.", description: "", signalWeights: { meios: 1.0 }, signalTags: ["conclui_logistica"], disambiguatesWhat: [], allowsBranchingTo: [] },
+      { optionId: "opt_1001_emo", label: "Falta absoluta de força relacional ou clareza interna de propósitos; uma desvitalização profunda que já deixou de justificar as movimentações dos cenários possíveis passivos logísticos irreais.", description: "", signalWeights: { liberdade: 1.0, vida: 1.0 }, signalTags: ["conclui_subjetivo"], disambiguatesWhat: [], allowsBranchingTo: [] }
     ]
   }
 ];

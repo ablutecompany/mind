@@ -1,60 +1,91 @@
 // src/services/narrativeSynthesisEngine.ts
 
+export interface CrossSignalsPayload {
+    dominantAxis?: string | null;
+    secondaryAxis?: string | null;
+    manifestContext?: string | null;
+    defenseMechanism?: string | null;
+}
+
 export interface NarrativeOutput {
     superficie: string;
     simbolismo: string;
     roubo: string;
+    nucleo: string;
     sintese: string;
 }
 
-const NARRATIVE_DICTIONARY: Record<string, NarrativeOutput> = {
-    'meios': {
-        superficie: "O teu relato aponta de forma aguda para um entrave material ou logístico, como se a infraestrutura base da tua vida não te oferecesse margem de respiração constante.",
-        simbolismo: "No entanto, o dinheiro ou a logística costumam atuar apenas como o 'bode expiatório' palpável. O que esta ausência de meios simboliza na verdade é um medo brutal de exposição e de contingência: a sensação de que não te podes defender do impacto cru da vida.",
-        roubo: "Este bloqueio não te tira apenas 'poder de compra' ou recursos logísticos; rouba-te a tua permissão interna para ditar os termos de ação. Faz com que assumas um estado de contenção tática permanente.",
-        sintese: "A necessidade mecânica está a amputar a tua autonomia real."
-    },
-    'apoio': {
-        superficie: "Transparece da tua avaliação um vazio severo na base afetiva ou na rede de contenção, indicando que te sentes frequentemente a carregar a carga a solo.",
-        simbolismo: "Essa ausência de retaguarda não é apenas uma questão de 'quem te ajuda'; simboliza a privação do direito primitivo de ceder. Estás a operar sob um imperativo não-verbal de que colapsar ou quebrar é estritamente proibido.",
-        roubo: "Isso custa-te o relaxamento do sistema nervoso. O que esta falta de apoio estrutural te rouba é o direito à recuperação natural, mantendo-te num hyper-vigilante 'survival mode' mascarado de responsabilidade funcional.",
-        sintese: "O peso invisível do isolamento estrutural dita o esgotamento futuro."
-    },
-    'liberdade': {
-        superficie: "A forma como lês a tua tensão aponta para uma opressão grave sobre a tua capacidade de escolher, indicando um espartilho rígido imposto pelo dever, contexto ou outras pessoas.",
-        simbolismo: "Trata-se do clássico sacrifício do indivíduo pelo guião. Esta falha de liberdade mascara uma capitulação silenciosa: algures pelo caminho, compraste a estabilidade ou a aceitação dos outros com a moeda da tua própria margem vital.",
-        roubo: "Não é apenas a agenda preenchida; é a ausência de espaço branco no cérebro. Esta falta te rouba o espaço da descoberta orgânica e do erro produtivo. Deixaste de viver para passar apenas a 'fazer uma gestão de crise contínua'.",
-        sintese: "O excesso de controlo externo devorou a força de instinto natural."
-    },
-    'energia': {
-        superficie: "A denúncia física é avassaladora: apontas para um desgaste prolongado, manifestando uma exaustão crassa na vontade prática ou mental de arranque.",
-        simbolismo: "O cansaço aqui deixou de ser subproduto do esforço comum e passou a ser o sintoma direto de atrito sistemático. Representa um fosso fatal entre a quantidade energética que queimas para aturar a tua realidade e a quantidade ínfima que o teu ecossistema te devolve como recompensa intrínseca.",
-        roubo: "A perda não é temporária. Este tipo de quebra basal queima a audácia. Se a energia não voltar, dás por ti a adiar as únicas decisões macro que te poderiam efetivamente libertar da origem desse próprio desgaste.",
-        sintese: "Uma contabilidade relacional e estrutural visceralmente falida entre dar e receber."
-    },
-    'direcao': {
-        superficie: "Assinalas um imobilismo não por falta de vontade bruta, mas por nevoeiro agudo na antecipação civil do caminho ou da próxima etapa correta a tomar.",
-        simbolismo: "A 'falta de rumo' é muitas vezes, no plano latente, o nome educado que se dá à paralisia que previne lutos pesados. Pode significar o pânico face à responsabilidade que as escolhas irreversíveis carregam. A neblina é um abrigo, embora frustrante.",
-        roubo: "Este tempo arrastado impede-te de solidificar referências empíricas. O custo é estático: rouba-te a hipótese de cometer erros espetaculares ou sucessos retumbantes, retendo-te na prisão confortável, mas inerte, do 'talvez'.",
-        sintese: "A indefinição serve muitas vezes como escudo contra o terror de errar."
-    },
-    'vida': {
-        superficie: "Reclamas a falta primária do pulsar, onde o problema não parece ser logístico nem direcional, mas antes a denúncia de uma existência que se desenrola no 'piloto automático', sem sal ou fogo.",
-        simbolismo: "Este é o núcleo da apatia existencial provocada pelo triunfo desmedido do funcional. A máquina de produzir/sobreviver esmagou a pessoa orgânica. Representa uma vida adiada, entregue aos trâmites sem devolução afetiva profunda.",
-        roubo: "Isto devora a singularidade. Estás a sofrer de alienação e distanciamento mecânico daquilo que antes era combustível vibrante, privando-te da sensação imperativa que define a posse legítima dos teus próprios dias.",
-        sintese: "A excelência de sobreviver silenciou o assombro da existência real."
+export function generateNarrative(payload: CrossSignalsPayload, isNebula: boolean): NarrativeOutput {
+    if (isNebula || !payload.dominantAxis) {
+        return {
+            superficie: "À superfície, o teu aperto parece focar-se em várias frentes ao mesmo tempo: queixas-te tanto da base prática como do cansaço ou da falta de orientação clara.",
+            simbolismo: "Há sinais de que a dispersão tática serve muitas vezes como defesa: ao tentar resolver vários os focos secundários ao mesmo tempo, evitas olhar de frente para o problema estrutural de fundo.",
+            roubo: "Ao direcionares esforço para múltiplas insatisfações simultâneas, perdes a energia que seria precisa para tomar uma decisão que mudasse o cenário de raiz.",
+            nucleo: "O núcleo do problema pode estar menos no acumular de azares, e mais numa exaustão tão grande que já te dificultou a intuição para priorizar o que dói mais.",
+            sintese: "Combater em muitas pequenas batalhas esconde a enorme estagnação onde tudo acontece."
+        };
     }
-};
 
-const NEBULA_NARRATIVE: NarrativeOutput = {
-    superficie: "As tuas respostas colidem furiosamente entre múltiplas frentes, com queixas desde limites práticos até ruturas de energia. O teu sensor espalha luz para todos os lados sem fixar foco.",
-    simbolismo: "Esta dispersão extrema costuma ser a evidência irrefutável do 'Efeito Incêndio Base': o alarme soa em todas as dependências porque é o alicerce absoluto que está estruturalmente comprometido. A névoa defende-te de descer ao porão, forçando uma miopia na gestão frenética das manifestações de superfície em vez da causa.",
-    roubo: "Enquanto atirares baldes de água avulsamente a pequenos focos diários, perdes toda a capacidade intelectual e vital de orquestrar a reforma massiva da arquitetura geral da tua vivência.",
-    sintese: "Lutar em 5 ringues minúsculos impede a perceção da arena colossal em degradação."
-};
-
-export function generateNarrative(dominantAxis: string | null, isNebula: boolean): NarrativeOutput {
-    if (isNebula || !dominantAxis) return NEBULA_NARRATIVE;
+    const dominantAxis = payload.dominantAxis as string;
+    const secondaryAxis = payload.secondaryAxis;
     
-    return NARRATIVE_DICTIONARY[dominantAxis.toLowerCase()] || NEBULA_NARRATIVE;
+    // CAMADA 1: SUPERFÍCIE (Contexto primário)
+    let sup = "";
+    if (dominantAxis === 'meios' || dominantAxis === 'apoio') {
+        sup = "O teu relato aponta à superfície para uma carência material, logística ou de amparo invisível, apontando para um ambiente que não te suporta ou exige demais de ti.";
+    } else if (dominantAxis === 'liberdade') {
+        sup = "Transparece uma leitura marcada por restrição ou dívida; a superfície do teu obstáculo é vivida como uma imposição e peso do dever face aos que te rodeiam.";
+    } else if (dominantAxis === 'energia' || dominantAxis === 'direcao' || dominantAxis === 'vida') {
+        sup = "A leitura primária reflete um desgaste lento, uma séria falta de orientação e o sentimento pesado de estar a viver simplesmente em 'piloto automático'.";
+    }
+
+    // CAMADA 2: SIMBOLISMO LATENTE (Cruzamento com eixo secundário ou primário)
+    let simb = "";
+    if (dominantAxis === 'meios' && secondaryAxis === 'liberdade') {
+        simb = "No entanto, os fatores de logística costumam encobrir algo mais tático. Pode indicar que esse limite de meios simboliza a necessidade mecânica de manter controlo externo, servindo-te de justificação para não arriscares a dor da separação de contextos rígidos.";
+    } else if (dominantAxis === 'apoio' && secondaryAxis === 'energia') {
+        simb = "Mas essa ausência de retaguarda tem raízes. Sugere que assumiste repetidamente o guião de ser 'o pilar utilitário' e a falta de amparo é agora apenas a consequência previsível de nunca teres exigido reciprocidade.";
+    } else if (dominantAxis === 'direcao' && secondaryAxis === 'vida') {
+        simb = "Contudo, o nevoeiro e a indecisão não são falta de vontade. Simboliza muitas vezes o único porto defensivo disponível: a 'espera confortável' como casulo provisório contra o terror latente de tentares a vitalização e falhares rudemente.";
+    } else {
+        simb = `No plano mais profundo, há indícios de que esta limitação atua muitas vezes em silêncio como desculpa para não encarar uma mudança mais dura. Focar o desconforto em questões de ${dominantAxis.toUpperCase()} previne que assumas o abanão estrutural de base.`;
+    }
+
+    // CAMADA 3: ROUBO E DANOS (O Custo)
+    let roub = "";
+    if (['energia', 'apoio', 'vida'].includes(dominantAxis)) {
+        roub = "O impacto deste circuito custa caro no dia a dia. O que isto te está a roubar, de facto, é a capacidade real de descanso e a empatia limpa pelas interações onde habitas.";
+    } else {
+        roub = "O que este modelo de tensão te rouba ativamente não é apenas dinheiro ou descanso; é a margem de erro. Faz com que encares a vida como se um movimento em falso provocasse um colapso imediato, roubando-te o ímpeto e autonomia.";
+    }
+
+    // CAMADA 4: NÚCLEO ORGANIZADOR (Conflito central)
+    let nuc = "";
+    if (dominantAxis === 'liberdade' || secondaryAxis === 'meios') {
+        nuc = "Parece apontar para um conflito onde compraste estabilidade (amorosa, laboral ou funcional) através do sacrifício sistemático da tua jurisdição pessoal. A fatura chegou mas a devolução de valor faliu.";
+    } else if (dominantAxis === 'direcao' || dominantAxis === 'energia') {
+        nuc = "Tudo sugere um mecanismo de esvaziamento silencioso. O núcleo deste compasso é a dissonância entre o enorme investimento da tua parte para não cair, e a devolução minúscula que tal atrito orgânico entrega ao teu sentido real.";
+    } else {
+        nuc = "O núcleo organizador parece residir na ideia fixa de que tens de agir sempre na defensiva para que a estrutura não se desfaça, acabando sem margem interior para testar qualquer mudança temporal.";
+    }
+
+    // CAMADA 5: SÍNTESE DO RECONHECIMENTO
+    let sint = "";
+    if (dominantAxis === 'meios' && secondaryAxis === 'liberdade') {
+        sint = "A submissão funcional tem servido tacitamente como escudo contra escolhas assustadoras.";
+    } else if (dominantAxis === 'apoio' && secondaryAxis === 'energia') {
+        sint = "O esgotamento silencioso é o tributo por carregar sozinho o que deveria ser partilhado ou devolvido.";
+    } else if (dominantAxis === 'direcao' && secondaryAxis === 'vida') {
+        sint = "A névoa mental parece ser um colete à prova de balas imperfeito num tempo não percorrido.";
+    } else {
+        sint = "O hábito de suportar o peso adormeceu a percepção de quem se era sem ele.";
+    }
+
+    return {
+        superficie: sup,
+        simbolismo: simb,
+        roubo: roub,
+        nucleo: nuc,
+        sintese: sint
+    };
 }

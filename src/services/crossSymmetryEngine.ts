@@ -40,13 +40,12 @@ export function runSymmetryCrossing(
   symbolicSignalsPresent: boolean
 ): SymmetryCrossOutput {
 
-  // Descobrir Eixos Dominantes Neutros
-  const sortedSuspects = wideScan.topSuspects.filter(s => 
-     ['meios', 'apoio', 'liberdade', 'energia', 'direcao', 'vida'].includes(s.id)
-  );
-  
-  let dominantAxis = sortedSuspects.length > 0 ? sortedSuspects[0].id : null;
-  let secondaryAxis = sortedSuspects.length > 1 ? sortedSuspects[1].id : null;
+  const activeCandidates = Object.values(wideScan.allCandidates)
+     .filter(c => ['meios', 'apoio', 'liberdade', 'energia', 'direcao', 'vida'].includes(c.id))
+     .sort((a, b) => b.activationScore - a.activationScore);
+
+  let dominantAxis = activeCandidates.length > 0 && activeCandidates[0].activationScore > 0 ? activeCandidates[0].id : null;
+  let secondaryAxis = activeCandidates.length > 1 && activeCandidates[1].activationScore >= 0.8 ? activeCandidates[1].id : null;
 
   // Dispersion Calculation
   // Extract answered axes from each block to find contradictions
@@ -102,7 +101,7 @@ export function runSymmetryCrossing(
      }
   }
 
-  const activeAxes = sortedSuspects.map(s => s.id);
+  const activeAxes = activeCandidates.filter(c => c.activationScore >= 0.8).map(s => s.id);
   
   let intermediatePatterns: string[] = [];
   let convergenceSignals: string[] = [];
