@@ -45,8 +45,8 @@ export function runSymmetryCrossing(
      ['meios', 'apoio', 'liberdade', 'energia', 'direcao', 'vida'].includes(s.id)
   );
   
-  const dominantAxis = sortedSuspects.length > 0 ? sortedSuspects[0].id : null;
-  const secondaryAxis = sortedSuspects.length > 1 ? sortedSuspects[1].id : null;
+  let dominantAxis = sortedSuspects.length > 0 ? sortedSuspects[0].id : null;
+  let secondaryAxis = sortedSuspects.length > 1 ? sortedSuspects[1].id : null;
 
   // Dispersion Calculation
   // Extract answered axes from each block to find contradictions
@@ -92,8 +92,16 @@ export function runSymmetryCrossing(
   let strongSummary: string | null = null;
   let dispersionDesc: string | null = null;
 
-  if (dispersionMetrics.hasDispersal) dispersionDesc = "Sinais dispersos por várias frentes (sem núcleo único fixado).";
-  if (dispersionMetrics.hasContradiction) dispersionDesc = "Forte contradição detetada nos blocos. O algoritmo aguarda clareamento.";
+  if (dispersionMetrics.hasDispersal) {
+     dispersionDesc = "Sinais distribuídos por várias frentes (sem núcleo único fixado).";
+     dominantAxis = null;
+     secondaryAxis = null;
+  }
+  if (dispersionMetrics.hasContradiction) {
+     dispersionDesc = "Centro ainda não estabilizado. Forte contradição detetada nos blocos.";
+     dominantAxis = null;
+     secondaryAxis = null;
+  }
 
   // Matriz de cruzamentos intermédios
   INTERMEDIATE_PATTERNS.forEach(cross => {
