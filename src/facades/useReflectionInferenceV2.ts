@@ -9,6 +9,7 @@ import { EvidenceItem } from '../contracts/inferenceTypes';
 
 import { V2RunnerInputFull } from '../adapters/surveyResponsesToV2EvidenceAdapter';
 import { runSymmetryCrossing } from '../services/crossSymmetryEngine';
+import { generateNarrative } from '../services/narrativeSynthesisEngine';
 
 export function useReflectionInferenceV2(featureFlagEnabled: boolean, sessionContext: V2RunnerInputFull) {
   if (!featureFlagEnabled) {
@@ -59,23 +60,30 @@ export function useReflectionInferenceV2(featureFlagEnabled: boolean, sessionCon
     finalConfidence = 'moderada'; // Fallback if 3 or 4 but dispersed
   }
 
+  const narrative = generateNarrative(symCross.dominantAxis, isNebula);
+
   const engineOutput = {
+    // CAMADA A — técnica interna
     dominantAxis: symCross.dominantAxis,
     secondaryAxis: symCross.secondaryAxis,
     confidenceLevel: finalConfidence,
-    intermediatePatterns: symCross.intermediatePatterns,
     convergenceSignals: symCross.convergenceSignals,
+    symbolicSignals: sessionContext.baseB_signals,
+    
+    // CAMADA B — leitura estruturada
+    manifestTheme: synthesis.manifestTheme,
+    latentTheme: synthesis.latentTheme,
     dispersionAlert: symCross.dispersionDesc,
     lowDifferentiation: isNebula,
     readingDepth: depth,
-    provisionalSummary: `Tensão no eixo ${symCross.dominantAxis || 'misto'}. ${symCross.dispersionDesc || ''}`,
-    strongSummary: finalConfidence === 'forte' ? symCross.strongSummary : null,
-    symbolicSignals: [synthesis.manifestTheme, synthesis.latentTheme]
+    
+    // CAMADA C — narrativa para o utilizador
+    narrative: narrative
   };
 
   return {
-    isActive: true,
     rawSynthesis: synthesis,
+    dispersionMetrics: metrics,
     uiPayload: engineOutput
   };
 }

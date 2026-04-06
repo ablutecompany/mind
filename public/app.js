@@ -296,40 +296,44 @@ function renderResults(data) {
   const inf = data.inference;
   const int = data.intervention;
 
-  let displayHeadline = "Hipótese Provisória";
-  let displaySubHeadline = inf.provisionalSummary;
-  let dynamicBlocksHTML = '';
+  // Garantia absoluta de que "eixo dominante" e raw convergence não vazam tautologia
+  const container = document.getElementById('narrative-container');
+  container.innerHTML = ''; 
 
   if (inf.readingDepth === 1) {
-    displayHeadline = `Nível 1 (Triagem): Eixo em Validação (${inf.dominantAxis || 'misto'})`;
-  } else if (inf.readingDepth === 2) {
-    displayHeadline = `Nível 2 (Intermédio): Sinal Dominante - ${inf.dominantAxis || 'Névoa'}`;
-  } else if (inf.readingDepth >= 3) {
-    if (inf.confidenceLevel === 'forte' || inf.confidenceLevel === 'boa') {
-      displayHeadline = `Leitura Robusta Nível ${inf.readingDepth}: Tensão de ${inf.dominantAxis}`;
-      if (inf.strongSummary) displaySubHeadline = inf.strongSummary;
-    } else {
-      displayHeadline = `Aviso: Baixa Diferenciação nos Dados (Profundidade: ${inf.readingDepth})`;
-    }
-  }
-
-  document.getElementById('res-latent').innerText = displayHeadline;
-  document.getElementById('res-manifest').innerText = displaySubHeadline;
-
-  const bandsContainer = document.getElementById('dynamic-bands-container');
-  bandsContainer.innerHTML = '';
-  
-  if (inf.convergenceSignals && inf.convergenceSignals.length > 0) {
-      inf.convergenceSignals.forEach(sig => {
-        bandsContainer.innerHTML += `<div class="dynamic-band"><p class="band-label">Sinal de Convergência</p><p class="band-value">${sig}</p></div>`;
-      });
-  } else {
-      bandsContainer.innerHTML += `<div class="dynamic-band"><p class="band-label">Sinalização</p><p class="band-value">Inobservável</p></div>`;
+    // Apenas submeteu B1 incompleto ou muito fraco (Misto)
+    container.innerHTML = `<h3 style="color:#8b949e">Triagem Preliminar</h3><p class="preview-reading">A quantidade de dados inserida ainda não compila um perfil estabilizado. Avança para a Leitura Aprofundada.</p>`;
+  } else if (inf.narrative) {
+    // Rendering the 4 layers of Narrative
+    const { superficie, simbolismo, roubo, sintese } = inf.narrative;
+    
+    // Header dinâmico dependendo da profundidade e confiança
+    let depthTitle = "Leitura Parcial";
+    if (inf.readingDepth >= 7) depthTitle = "Leitura Aprofundada";
+    if (inf.readingDepth >= 10) depthTitle = "Leitura Completa";
+    
+    container.innerHTML = `
+      <h3 style="color:#d29922; margin-bottom: 2rem;">[ ${depthTitle} ]</h3>
+      
+      <p class="section-label">O QUE ESTÁ À SUPERFÍCIE</p>
+      <p style="color:#c9d1d9; font-size:1.1rem; line-height:1.6; margin-bottom: 2rem;">${superficie}</p>
+      
+      <p class="section-label">O SINAL LATENTE</p>
+      <p style="color:#c9d1d9; font-size:1.1rem; line-height:1.6; margin-bottom: 2rem;">${simbolismo}</p>
+      
+      <p class="section-label">O QUE TE ESTÁ A CUSTAR</p>
+      <p style="color:#c9d1d9; font-size:1.1rem; line-height:1.6; margin-bottom: 2rem; border-left: 3px solid #cb2431; padding-left: 14px;">${roubo}</p>
+      
+      <div class="intervention-teaser" style="background:#0d1117; border: 1px solid #30363d; border-left: 4px solid #58a6ff;">
+         <p class="section-label" style="color:#58a6ff;">SÍNTESE DA TENSÃO</p>
+         <h2 style="font-size:1.5rem; color:#fff; margin-bottom:0;">${sintese}</h2>
+      </div>
+    `;
   }
 
   const ambiguityEl = document.getElementById('ambiguity-warning');
   if (inf.lowDifferentiation) {
-    ambiguityEl.innerText = "ALERTA: Baixa Diferenciação. O motor deteta dispersão de respostas ou névoa estrutural.";
+    ambiguityEl.innerText = "ALERTA DA MÁQUINA: Padrão difuso. As tuas peças rodam entre eixos sem estabilizar um centro. Sugere elevado ruído base.";
     ambiguityEl.classList.remove('hidden');
   } else {
     ambiguityEl.classList.add('hidden');
