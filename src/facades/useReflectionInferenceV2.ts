@@ -37,26 +37,39 @@ export function useReflectionInferenceV2(featureFlagEnabled: boolean, sessionCon
   );
 
   // 5. Novo Motor de Cruzamento de Eixos Intermédios Neutros (Symmetry Engine)
-  const symCross = runSymmetryCrossing(wideScanResult, sessionContext.blocksAnswered || 0, sessionContext.rawAnswers || []);
+  const symbolicSignalsPresent = synthesis.manifestTheme !== "Temas práticos difusos" || sessionContext.baseB_signals.length > 0;
+  const symCross = runSymmetryCrossing(wideScanResult, sessionContext.blocksAnswered || 0, sessionContext.rawAnswers || [], symbolicSignalsPresent);
 
-  const hasEnoughDepth = symCross.readingDepth >= 3;
+  const depth = symCross.readingDepth;
+  const metrics = symCross.dispersionMetrics;
   
-  // Regras de Matriz de Confiança
+  // Regras Novas Matriz de Confiança
   let finalConfidence = 'baixa';
-  if (symCross.convergenceSignals.length > 0 && hasEnoughDepth) finalConfidence = 'forte';
-  else if (symCross.convergenceSignals.length > 0) finalConfidence = 'boa';
-  else if (hasEnoughDepth) finalConfidence = 'moderada';
-  if (wideScanResult.isAmbiguous) finalConfidence = 'baixa';
+  let isNebula = wideScanResult.isAmbiguous || metrics.hasDispersal || metrics.hasContradiction;
+
+  if (depth <= 1 || isNebula) {
+    finalConfidence = 'baixa';
+  } else if (depth === 2 && !isNebula) {
+    finalConfidence = 'moderada';
+  } else if (depth === 3 && metrics.hasConvergence && !metrics.hasDispersal) {
+    finalConfidence = 'boa';
+  } else if (depth >= 4 && metrics.hasConvergence && !isNebula && symbolicSignalsPresent) {
+    finalConfidence = 'forte';
+  } else if (depth >= 3) {
+    finalConfidence = 'moderada'; // Fallback if 3 or 4 but dispersed
+  }
 
   const engineOutput = {
     dominantAxis: symCross.dominantAxis,
     secondaryAxis: symCross.secondaryAxis,
     confidenceLevel: finalConfidence,
+    intermediatePatterns: symCross.intermediatePatterns,
     convergenceSignals: symCross.convergenceSignals,
-    lowDifferentiation: wideScanResult.isAmbiguous,
-    readingDepth: symCross.readingDepth,
-    provisionalSummary: `Tensão primária detetada no eixo ${symCross.dominantAxis || 'misto'}. ${symCross.convergenceSignals.join('. ')}`,
-    strongSummary: hasEnoughDepth ? symCross.strongSummary : null,
+    dispersionAlert: symCross.dispersionDesc,
+    lowDifferentiation: isNebula,
+    readingDepth: depth,
+    provisionalSummary: `Tensão no eixo ${symCross.dominantAxis || 'misto'}. ${symCross.dispersionDesc || ''}`,
+    strongSummary: finalConfidence === 'forte' ? symCross.strongSummary : null,
     symbolicSignals: [synthesis.manifestTheme, synthesis.latentTheme]
   };
 
