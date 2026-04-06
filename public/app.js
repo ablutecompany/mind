@@ -19,14 +19,73 @@ function activateScreen(screenEl) {
   screenEl.classList.add('active');
 }
 
-// 1. Start Click
-document.getElementById('start-btn').addEventListener('click', () => {
+// State Persistence Logic
+function saveLocalState() {
+  const state = {
+    currentStep,
+    surveyAnswers,
+    testerFeedback,
+    timestamp: new Date().toISOString()
+  };
+  localStorage.setItem('mind_session', JSON.stringify(state));
+}
+
+function loadLocalState() {
+  const saved = localStorage.getItem('mind_session');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      // Validate
+      if (typeof parsed.currentStep === 'number' && Array.isArray(parsed.surveyAnswers)) {
+        currentStep = parsed.currentStep;
+        surveyAnswers = parsed.surveyAnswers;
+        testerFeedback = parsed.testerFeedback || [];
+        return true;
+      }
+    } catch (e) {
+      console.warn("Sessão corrompida, a limpar.");
+      localStorage.removeItem('mind_session');
+    }
+  }
+  return false;
+}
+
+function clearLocalState() {
+  localStorage.removeItem('mind_session');
   currentStep = 0;
   surveyAnswers = [];
   testerFeedback = [];
   currentQuestionSelections.clear();
+}
+
+// 1. Start Click
+document.getElementById('start-btn').addEventListener('click', () => {
+  clearLocalState();
   loadQuestion();
   activateScreen(screens.question);
+});
+
+document.getElementById('resume-btn')?.addEventListener('click', () => {
+  if (loadLocalState()) {
+    currentQuestionSelections.clear();
+    loadQuestion();
+    activateScreen(screens.question);
+  } else {
+    alert("Falha ao recuperar sessão. Inicia uma nova.");
+  }
+});
+
+document.getElementById('clear-btn')?.addEventListener('click', () => {
+  clearLocalState();
+  document.getElementById('resume-container').classList.add('hidden');
+});
+
+// Initialization
+document.addEventListener('DOMContentLoaded', () => {
+  if (localStorage.getItem('mind_session')) {
+    const resumeContainer = document.getElementById('resume-container');
+    if(resumeContainer) resumeContainer.classList.remove('hidden');
+  }
 });
 
 // 2. Load Question View
@@ -40,7 +99,8 @@ function loadQuestion() {
   document.getElementById('question-text').innerText = q.text;
 
   let maxText = q.maxSelections > 1 ? `(Escolhe até ${q.maxSelections} opções)` : `(Escolhe apenas 1 opção)`;
-  document.getElementById('question-instruction').innerText = `Bloco: ${SURVEY_BLOCKS[q.blockId].title} - ${maxText}`;
+  const blockNum = q.blockId.split('_')[1];
+  document.getElementById('question-instruction').innerText = `Bloco ${blockNum}: ${SURVEY_BLOCKS[blockNum].title} - ${maxText}`;
   
   // Progress Bar
   const progressPerc = ((currentStep) / SURVEY_QUESTIONS.length) * 100;
@@ -143,12 +203,14 @@ document.getElementById('next-btn').addEventListener('click', () => {
     });
 
     currentStep++;
+    saveLocalState();
     loadQuestion();
 });
 
 document.getElementById('back-btn').addEventListener('click', () => {
     if (currentStep > 0) {
         currentStep--;
+        saveLocalState();
         loadQuestion();
     }
 });
@@ -187,6 +249,7 @@ document.getElementById('save-feedback-btn').addEventListener('click', () => {
     });
 
     alert("Feedback guardado!");
+    saveLocalState(); // persist feedback locally too
     document.getElementById('feedback-drawer').classList.add('hidden');
     document.getElementById('issue-comment').value = '';
 });
@@ -218,7 +281,13 @@ async function submitEvaluation() {
     renderResults(data);
   } catch (error) {
     console.error("Erro Crítico da API:", error);
-    alert("Falhou o envio para o motor. Verifica os logs ou tenta com o Fallback Ativado.");
+    
+    // Fallback/Modo Degradado
+    alert("Aviso Modo Degradado: Falha de comunicação com o servidor.\nO teu progresso está todo guardado localmente neste dispositivo.\nPodes atualizar a página e premir 'Retomar Progresso' mais tarde, ou tentar Re-submeter.");
+    
+    // Reverter UI de forma segura
+    document.getElementById('progress-bar').style.width = ((currentStep) / SURVEY_QUESTIONS.length) * 100 + '%';
+    activateScreen(screens.question);
   }
 }
 
