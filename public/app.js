@@ -46,12 +46,36 @@ function loadQuestion() {
   // Navigation Logic
   document.getElementById('back-btn').style.display = currentStep > 0 ? 'block' : 'none';
 
-  // Next Btn state
+  // Next Btn and Middle Submit state
   const nextBtn = document.getElementById('next-btn');
+  const midSubmitContainer = document.getElementById('mid-submit-container');
   nextBtn.style.display = 'block';
+  nextBtn.innerText = 'Seguinte';
   nextBtn.disabled = true; // wait for selection
 
-  // Restore previous answers if we walked backward
+  if (midSubmitContainer) midSubmitContainer.innerHTML = ''; // reset
+
+  // Calculate if we should show a partial submit button alongside NEXT
+  let isBoundary = false;
+  let boundaryLabel = "";
+  if (q.blockId === 'block_4' && SURVEY_QUESTIONS[currentStep + 1]?.blockId === 'block_5') {
+      isBoundary = true; boundaryLabel = "Terminar com Leitura Parcial";
+  } else if (q.blockId === 'block_7' && SURVEY_QUESTIONS[currentStep + 1]?.blockId === 'block_8') {
+      isBoundary = true; boundaryLabel = "Terminar com Leitura Aprofundada";
+  } else if (q.blockId === 'block_10' && !SURVEY_QUESTIONS[currentStep + 1]) {
+      nextBtn.innerText = "Submeter Leitura Completa"; // End of survey
+  }
+
+  if (isBoundary && midSubmitContainer) {
+      const midBtn = document.createElement('button');
+      midBtn.className = "ghost-btn mt-4";
+      midBtn.style.width = "100%";
+      midBtn.innerText = boundaryLabel;
+      midBtn.onclick = () => submitEvaluation();
+      midSubmitContainer.appendChild(midBtn);
+  }
+
+  // Restore previous answers se voltámos atrás
   currentQuestionSelections.clear();
   const existingBlockObj = surveyAnswers.find(s => s.blockId === q.blockId);
   if (existingBlockObj) {
@@ -263,5 +287,12 @@ document.getElementById('export-feedback-btn').addEventListener('click', () => {
 });
 
 document.getElementById('paywall-btn').addEventListener('click', () => {
-  alert("Num ambiente real, enviarias um Payload com `{hasPaid: true}` para o Motor V2 para extrair os Roadmaps Finais Guardados na Cloud.");
+  const isConfident = document.getElementById('res-latent').innerText.includes('Leitura Robusta') || 
+                      document.getElementById('res-latent').innerText.includes('Núcleo Existencial');
+  
+  if (isConfident) {
+      alert("Acesso Autorizado ao Relatório de 60 Dias. A intervenção pode prosseguir porque a raiz psicológica está blindada.");
+  } else {
+      alert("Relatório de 60 dias Bloqueado.\nO Centro ainda não está estabilizado. Apenas recebes sugestões iniciais e exercícios de clarificação. (Confidence < Boa)");
+  }
 });

@@ -79,10 +79,28 @@ export function runSymmetryCrossing(
      scatteredAxesCount: totalDistinctAxes.size
   };
 
-  if (totalDistinctAxes.size >= 4) dispersionMetrics.hasDispersal = true;
-  if (totalDistinctAxes.size >= 5) dispersionMetrics.hasContradiction = true;
+  let isNebula = false;
+  if (totalDistinctAxes.size >= 4) { dispersionMetrics.hasDispersal = true; isNebula = true; }
+  if (totalDistinctAxes.size >= 5) { dispersionMetrics.hasContradiction = true; isNebula = true; }
   if (totalDistinctAxes.size <= 2 && dominantAxis) dispersionMetrics.hasConvergence = true;
   if (totalDistinctAxes.size === 3) dispersionMetrics.hasCoupling = true;
+
+  // Processar B7 override
+  const b7Answer = rawAnswers.find(ans => ans.questionId.startsWith('b7_'));
+  let b7ResolutionStr = null;
+  if (b7Answer) {
+     const b7Opt = b7Answer.selectedOptionId;
+     if (b7Opt.includes('liberdade_vs_meios')) { b7ResolutionStr = 'Conflito estrutural: Liberdade vs Meios'; }
+     if (b7Opt.includes('liberdade_vs_apoio')) { b7ResolutionStr = 'Conflito esgotante: Rutura vs Isolamento (Apoio)'; }
+     if (b7Opt.includes('vida_vs_energia')) { b7ResolutionStr = 'Atrito vital: Fome Existencial (Vida) vs Paralisia (Energia)'; }
+
+     if (isNebula || dispersionMetrics.hasCoupling) {
+        // OVERRIDE (se havia nevoa, o utilizador tomou partido)
+        // Extract dominant from the VS
+        if (b7Opt.includes('liberdade')) dominantAxis = 'liberdade';
+        if (b7Opt.includes('vida')) dominantAxis = 'vida';
+     }
+  }
 
   const activeAxes = sortedSuspects.map(s => s.id);
   
@@ -94,13 +112,15 @@ export function runSymmetryCrossing(
 
   if (dispersionMetrics.hasDispersal) {
      dispersionDesc = "Sinais distribuídos por várias frentes (sem núcleo único fixado).";
-     dominantAxis = null;
-     secondaryAxis = null;
+     if (!b7Answer) { dominantAxis = null; secondaryAxis = null; } // Só reseta se o utilizador não teve B7 para desempatar
   }
   if (dispersionMetrics.hasContradiction) {
-     dispersionDesc = "Centro ainda não estabilizado. Forte contradição detetada nos blocos.";
-     dominantAxis = null;
-     secondaryAxis = null;
+     dispersionDesc = "Centro ainda não estabilizado. Forte contradição detetada nos blocos iniciais.";
+     if (!b7Answer) { dominantAxis = null; secondaryAxis = null; }
+  }
+
+  if (b7ResolutionStr) {
+      convergenceSignals.push(`Tribunal de B7: ${b7ResolutionStr}`);
   }
 
   // Matriz de cruzamentos intermédios

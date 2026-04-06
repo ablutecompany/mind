@@ -3,7 +3,13 @@ const SURVEY_BLOCKS = {
   1: { id: "block_1", title: "Orientação Inicial do Aperto" },
   2: { id: "block_2", title: "Aprofundamento do Aperto" },
   3: { id: "block_3", title: "Priorização do Núcleo" },
-  4: { id: "block_4", title: "Símbolos Concretos e Leitura Existencial" }
+  4: { id: "block_4", title: "Símbolos Concretos e Leitura Existencial" },
+  5: { id: "block_5", title: "Defesas Ativas e Comportamentos Compensatórios" },
+  6: { id: "block_6", title: "Custos e Danos Colaterais" },
+  7: { id: "block_7", title: "Verificação de Eixos Rivais e Atrito Interno" },
+  8: { id: "block_8", title: "Ação Adiada e Resistência Prática" },
+  9: { id: "block_9", title: "Escala Existencial e Valores de Reposição" },
+  10: { id: "block_10", title: "Prontidão para Agir (Fecho)" }
 };
 
 const SURVEY_QUESTIONS = [
@@ -472,6 +478,93 @@ const SURVEY_QUESTIONS = [
       { id: "b4_opt12_5", text: "o meu rumo" },
       { id: "b4_opt12_6", text: "a minha parte mais viva" },
       { id: "b4_opt12_7", text: "ainda não sei nomear isso" }
+    ]
+  },
+
+  // ============================================
+  // BLOCO 5 - Defensas
+  // ============================================
+  {
+    id: "b5_q1", blockId: "block_5", maxSelections: 2,
+    text: "Qual tem sido o teu principal refúgio instintivo para não colapsar sob esta tensão?",
+    options: [
+      { id: "b5_opt1_1", text: "Trabalho incessante ou necessidade prática de ocupação contínua" },
+      { id: "b5_opt1_2", text: "Isolamento progressivo: fechamento a convívios ou opiniões" },
+      { id: "b5_opt1_3", text: "Projeção em terceiros: a culpa recai quase sempre em limitações externas" },
+      { id: "b5_opt1_4", text: "Contenção absoluta das emoções fora do que é considerado funcional" },
+      { id: "b5_opt1_5", text: "Procura compulsiva de distradores para evitar o peso central" },
+      { id: "b5_opt1_6", text: "Não me sinto em modo de refúgio" }
+    ]
+  },
+
+  // ============================================
+  // BLOCO 6 - Latência
+  // ============================================
+  {
+    id: "b6_q1", blockId: "block_6", maxSelections: 2,
+    text: "Qual é o peso silencioso que mais consome a tua retaguarda neurológica?",
+    options: [
+      { id: "b6_opt1_1", text: "A insónia persistente ou a má qualidade do descanso" },
+      { id: "b6_opt1_2", text: "A irritabilidade de resposta cega ao toque mais leve" },
+      { id: "b6_opt1_3", text: "Um silenciamento perigoso face a coisas que me deviam importar" },
+      { id: "b6_opt1_4", text: "Uma estranha resignação (deixar de fazer perguntas)" },
+      { id: "b6_opt1_5", text: "Fricção somática e tensões físicas corporificadas" }
+    ]
+  },
+
+  // ============================================
+  // BLOCO 7 - Desempate Rival
+  // ============================================
+  {
+    id: "b7_q1", blockId: "block_7", maxSelections: 1,
+    text: "Se fôssemos a um tribunal interno, qual seria o derradeiro conflito insolúvel em ti?",
+    options: [
+      { id: "b7_opt1_liberdade_vs_meios", text: "O desejo de arriscar por liberdade vs O terror de morrer à míngua sem estrutura material" },
+      { id: "b7_opt1_liberdade_vs_apoio", text: "O grito de exaustão clamando rutura vs O medo avassalador de cortar apoio e ficar só" },
+      { id: "b7_opt1_vida_vs_energia", text: "A necessidade de sentido vital superior vs A atração pelo conforto da paralisia" },
+      { id: "b7_opt1_nevoa", text: "Estes atritos não refletem na integra a minha guerra" }
+    ]
+  },
+
+  // ============================================
+  // BLOCO 8 - Procrastinação e Ação Adiada
+  // ============================================
+  {
+    id: "b8_q1", blockId: "block_8", maxSelections: 1,
+    text: "O que justificas sempre perante ti próprio/a para tolerar o que adias estruturalmente?",
+    options: [
+      { id: "b8_opt1_1", text: "«Ainda não tenho margem de conforto/risco suficiente»" },
+      { id: "b8_opt1_2", text: "«Não devia abandonar a responsabilidade assumida.»" },
+      { id: "b8_opt1_3", text: "«A energia que tenho mal chega para cumprir.»" },
+      { id: "b8_opt1_4", text: "«Tenho demasiado medo de uma transição para o vazio.»" },
+      { id: "b8_opt1_5", text: "«Sinto-me desmobilizado/a por não ver clareza na etapa que se segue.»" }
+    ]
+  },
+
+  // ============================================
+  // BLOCO 9 - Escala Existencial
+  // ============================================
+  {
+    id: "b9_q1", blockId: "block_9", maxSelections: 1,
+    text: "Se existisse garantia absoluta de zero repercussões colaterais amanhã. O que tomarias de assalto para ti?",
+    options: [
+      { id: "b9_opt1_1", text: "Uma autonomia de execução livre (ditar os termos do que faço)" },
+      { id: "b9_opt1_2", text: "Uma paragem colossal e impune de todas as frentes de stresse mental" },
+      { id: "b9_opt1_3", text: "O regresso à base limpa de um núcleo íntimo/familiar" },
+      { id: "b9_opt1_4", text: "Uma transição disruptiva drástica à caça do instinto vital perdido" }
+    ]
+  },
+
+  // ============================================
+  // BLOCO 10 - Fecho Prático
+  // ============================================
+  {
+    id: "b10_q1", blockId: "block_10", maxSelections: 1,
+    text: "Qual é o verdadeiro Índice de Prontidão para operar neste limite?",
+    options: [
+      { id: "b10_opt1_1", text: "Totalmente investido: Preciso de protocolo logístico de resgate ativo agora" },
+      { id: "b10_opt1_2", text: "Téptido: Quero desbravar alternativas mas o meu stresse é funcional no imediato" },
+      { id: "b10_opt1_3", text: "Vigilância pura: Queria uma leitura disto, a ação virá a seu tempo se o cenário se degradar muito mais" }
     ]
   }
 ];
