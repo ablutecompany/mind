@@ -17,12 +17,15 @@ export interface EvidenceMappingParams {
 // Neste momento, reflete os 15 núcleos ontológicos e cobre blocos de simulação.
 // =========================================================================
 export const SurveyOptionDictionary: Record<string, EvidenceMappingParams> = {
-  // --- BASE A (NÚCLEOS DE SOFRIMENTO ANCORADOS NO REAL) ---
-  'opt_A1_dinheiro': { block: 'superficial', signal_A: { id: 'sofrimento_incerteza', weight: 1.0, polarity: 'for' }},
-  'opt_A1_casa': { block: 'superficial', signal_A: { id: 'medo', weight: 1.0, polarity: 'for' }},
-  'opt_A1_relacionamento': { block: 'superficial', signal_A: { id: 'relacoes_dificeis', weight: 1.0, polarity: 'for' }},
-  'opt_A1_trabalho': { block: 'superficial', signal_A: { id: 'falta_sentido', weight: 1.0, polarity: 'for' }},
-  'opt_A1_adiada': { block: 'superficial', signal_A: { id: 'conflitos_internos', weight: 1.0, polarity: 'for' }},
+  // --- BASE A (NÚCLEOS DE SOFRIMENTO ANCORADOS NO REAL - NÍVEL 1 TRIAGEM) ---
+  'opt_A1_meios': { block: 'superficial', signal_A: { id: 'sofrimento_incerteza', weight: 0.5, polarity: 'for' }},
+  'opt_A1_apoio': { block: 'superficial', signal_A: { id: 'solidao', weight: 0.5, polarity: 'for' }},
+  'opt_A1_liberdade': { block: 'superficial', signal_A: { id: 'relacoes_dificeis', weight: 0.5, polarity: 'for' }},
+  'opt_A1_energia': { block: 'superficial', signal_A: { id: 'procrastinacao', weight: 0.5, polarity: 'for' }},
+  'opt_A1_direcao': { block: 'superficial', signal_A: { id: 'conflitos_internos', weight: 0.5, polarity: 'for' }},
+  'opt_A1_vida': { block: 'superficial', signal_A: { id: 'falta_sentido', weight: 0.5, polarity: 'for' }},
+  'opt_A1_none': { block: 'superficial', signal_A: { id: 'falta_autocontrolo', weight: 0.2, polarity: 'for' }}, // baixa diferenciacao
+
   
   // Opções Antigas Legacy (para não quebrar testes)
   'opt_A1_fuga': { block: 'superficial', signal_A: { id: 'medo', weight: 1.0, polarity: 'for' }},

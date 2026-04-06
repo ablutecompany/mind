@@ -5,13 +5,15 @@ const DEMO_QUESTIONS = [
   {
     id: "q1",
     blockId: "superficial",
-    text: "Neste momento, o que mais limita os teus movimentos reais na vida?",
+    text: "Quando pensas no que te está a travar, sentes mais:",
     options: [
-      { id: "opt_A1_dinheiro", text: "Falta de dinheiro para mexer na minha vida." },
-      { id: "opt_A1_casa", text: "Falta de espaço ou casa adequada." },
-      { id: "opt_A1_relacionamento", text: "Estar presa a uma estrutura relacional ou familiar." },
-      { id: "opt_A1_trabalho", text: "Desgaste no trabalho e falta de saída clara." },
-      { id: "opt_A1_adiada", text: "Sensação de vida adiada, mesmo sem um problema único." }
+      { id: "opt_A1_meios", text: "Falta de meios" },
+      { id: "opt_A1_apoio", text: "Falta de apoio, ligação ou estrutura afetiva" },
+      { id: "opt_A1_liberdade", text: "Falta de liberdade" },
+      { id: "opt_A1_energia", text: "Falta de energia" },
+      { id: "opt_A1_direcao", text: "Falta de direção" },
+      { id: "opt_A1_vida", text: "Falta de vida" },
+      { id: "opt_A1_none", text: "Não consigo identificar bem" }
     ]
   },
   {
@@ -116,6 +118,8 @@ async function submitEvaluation() {
       throw new Error("Modo de Teste Forçado (Gateway desativado)");
     }
 
+    const totalGivenAnswers = payload.surveyBlocks.reduce((acc, block) => acc + block.answers.length, 0);
+
     const response = await fetch('/api/evaluate', {
       method: 'POST',
       headers: {
@@ -130,61 +134,83 @@ async function submitEvaluation() {
 
     const data = await response.json();
     console.log("[Demo Frontend] Resposta Recebida:", data);
-    renderResults(data);
+    renderResults(data, totalGivenAnswers);
   } catch (error) {
-    console.warn("⚠️ API remota contornada ou falha. Fallback Local Engine ativado:", error.message);
+    console.warn("⚠️ Fallback Local Engine ativado:", error.message);
     
-    // Fallback local determinístico
+    // Fallback local determinístico simplificado E prudente!
     const q1Ans = surveyAnswers.find(b => b.blockId === 'superficial')?.answers[0].selectedOptionId;
     
     let mockResult = {
       inference: {
-        headline: "Isolamento Próprio", 
-        subHeadline: "Problema no Ambiente Atual",
-        isLowConfidence: false,
-        ambiguityDisclaimer: null,
+        headline: "Leitura Inicial (Fallback Local)", 
+        subHeadline: "O ambiente de teste calculou um eixo de forma simplificada e provisória.",
+        isLowConfidence: true,
+        ambiguityDisclaimer: "GRAU DE CONFIANÇA BAIXO: Amostragem insuficiente de dados.",
         dynamicBands: [
-          { label: "Domínio Afetado", value: "Não mapeado", type: "core" }
+          { label: "Hipótese de Partida", value: "A aguardar volume de respostas", type: "core" }
         ]
       },
       intervention: {
-        previewReading: "A API esteve desligada (TestMode), mas calculámos a tua posição localmente.",
-        previewPriority: "Foco Estrutural",
-        previewAction: "Inicia a fase 1 da reestruturação logística.",
+        previewReading: "[Modo Local] Faltam perguntas para consolidar um retrato exato.",
+        previewPriority: "Foco Sugerido na Amostragem",
+        previewAction: "Nenhuma ação dura deve ser desenhada com 3 perguntas.",
         hasMoreLocked: true
       }
     };
 
-    if (q1Ans === 'opt_A1_dinheiro') {
-       mockResult.inference.headline = "Sofrimento pela Escassez";
-       mockResult.inference.subHeadline = "O fator financeiro destrói a margem livre";
-       mockResult.inference.dynamicBands = [{ label: "Carga Prática", value: "Sobrevivência Financeira", type: "core" }];
-    } else if (q1Ans === 'opt_A1_casa') {
-       mockResult.inference.headline = "Território Ocupado";
-       mockResult.inference.subHeadline = "Restrição de autonomia habitacional";
-       mockResult.inference.dynamicBands = [{ label: "Carga Prática", value: "Desterritorialização", type: "core" }];
-    } else if (q1Ans === 'opt_A1_relacionamento') {
-       mockResult.inference.headline = "Clausura Relacional";
-       mockResult.inference.subHeadline = "O vínculo que estagna o movimento";
-       mockResult.inference.dynamicBands = [{ label: "Carga Prática", value: "Estrutura Afetiva Pesada", type: "core" }];
+    if (q1Ans === 'opt_A1_meios') {
+       mockResult.inference.headline = "Eixo Possivelmente Ativo: Meios";
+       mockResult.inference.dynamicBands = [{ label: "Suspeita Dominante", value: "Condicionamento Material", type: "core" }];
+    } else if (q1Ans === 'opt_A1_apoio') {
+       mockResult.inference.headline = "Eixo Possivelmente Ativo: Apoio";
+       mockResult.inference.dynamicBands = [{ label: "Suspeita Dominante", value: "Falta de Base Afetiva", type: "core" }];
+    } else if (q1Ans === 'opt_A1_liberdade') {
+       mockResult.inference.headline = "Eixo Possivelmente Ativo: Liberdade";
+       mockResult.inference.dynamicBands = [{ label: "Suspeita Dominante", value: "Aprisionamento ou Dever", type: "core" }];
     }
 
-    renderResults(mockResult);
+    // Passamos o totalAnswers para renderResults aplicar máscaras também se necessário
+    const totalGivenAnswers = surveyAnswers.reduce((acc, block) => acc + block.answers.length, 0);
+    renderResults(mockResult, totalGivenAnswers);
   }
 }
 
 // 4. Render Engine Output
-function renderResults(data) {
+function renderResults(data, answersCount) {
   const inf = data.inference;
   const int = data.intervention;
 
-  document.getElementById('res-latent').innerText = inf.headline;
-  document.getElementById('res-manifest').innerText = inf.subHeadline;
+  // Lógica de Thresholds (Prudência Inferencial Frontend)
+  // Nível 1: Triagem Inicial (<= 3 questões)
+  // Nível 2: Leitura Intermédia (<= 10 questões)
+  // Nível 3: Leitura Forte (> 10 questões convergentes)
+  const isLevel1 = answersCount <= 3;
+  const isLevel2 = answersCount > 3 && answersCount <= 10;
+
+  // Masking para Nível 1 e 2 - Nunca afirmar fechado!
+  let displayHeadline = inf.headline;
+  let displaySubHeadline = inf.subHeadline;
+  let displayBands = inf.dynamicBands;
+  let displayPriorities = int.previewPriority;
+
+  if (isLevel1) {
+    displayHeadline = "Hipótese Provisória (Nível 1)";
+    displaySubHeadline = "Baseado numa triagem curta. " + (inf.headline ? `O eixo possivelmente mais ativo aponta para dinâmicas de ${inf.headline.toLowerCase()}.` : 'Sinal dominante em validação.');
+    displayBands = displayBands.map(b => ({...b, label: "Foco sob suspeita", type: "hipótese inicial"}));
+    displayPriorities = "Observação do Eixo";
+  } else if (isLevel2) {
+    displayHeadline = "Sinal Dominante em Validação (Nível 2)";
+    displaySubHeadline = `A aprofundar tensões: as primeiras relações apontam convergência em ${inf.headline}. A leitura está ainda incompleta.`;
+  }
+
+  document.getElementById('res-latent').innerText = displayHeadline;
+  document.getElementById('res-manifest').innerText = displaySubHeadline;
 
   // Dynamic Bands
   const bandsContainer = document.getElementById('dynamic-bands-container');
   bandsContainer.innerHTML = '';
-  inf.dynamicBands.forEach(band => {
+  displayBands.forEach(band => {
     const bandHTML = `
       <div class="dynamic-band">
         <p class="band-label">${band.type}: ${band.label}</p>
