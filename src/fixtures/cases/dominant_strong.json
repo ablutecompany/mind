@@ -1,0 +1,8 @@
+{
+  "description": "Simula o estado Dominant Strong, onde o utilizador responde claramente alinhado com um problema de Vergonha e Defesa de Fuga.",
+  "inputs": [
+    { "blockId": "superficial", "answers": [{ "questionId": "q1", "selectedOptionId": "opt_A3_vergonha" }] },
+    { "blockId": "symbolic", "answers": [{ "questionId": "q2", "selectedOptionId": "opt_B2_trabalho_identidade" }] },
+    { "blockId": "deepening", "answers": [{ "questionId": "q3", "selectedOptionId": "opt_D2_cria_desvios" }, { "questionId": "q4", "selectedOptionId": "opt_D4_auto_valor_ferido" }] }
+  ]
+}
