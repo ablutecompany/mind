@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autorreflexão | Mind V2</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <!-- Landing Screen -->
+  <section id="landing-screen" class="screen active">
+    <div class="content">
+      <h1 class="headline">Bem-vindo(a) à Arquitetura Mental</h1>
+      <p class="subtitle">Este não é um teste clínico. É um raio-X das tuas tensões estruturais.</p>
+      <button id="start-btn" class="primary-btn">Iniciar Análise</button>
+    </div>
+  </section>
+
+  <!-- Questionnaire Screen -->
+  <section id="question-screen" class="screen">
+    <div class="progress-bar-container">
+      <div id="progress-bar" class="progress-bar"></div>
+    </div>
+    <div class="content">
+      <h2 id="question-text" class="question-title">A carregar pergunta...</h2>
+      <div id="options-container" class="options-grid">
+        <!-- Options injected via JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading / Inferring Screen -->
+  <section id="loading-screen" class="screen">
+    <div class="content">
+      <div class="spinner"></div>
+      <h2 class="headline">A cruzar heurísticas...</h2>
+      <p class="subtitle">A decifrar o núcleo comportamental silencioso.</p>
+    </div>
+  </section>
+
+  <!-- WOW Result Screen -->
+  <section id="result-screen" class="screen">
+    <div class="content results-content">
+      <p class="section-label">A TUA DISSONÂNCIA LATENTE</p>
+      <h1 id="res-latent" class="headline latent-theme"></h1>
+      <h3 id="res-manifest" class="manifest-theme"></h3>
+
+      <!-- Dynamic Bands -->
+      <div id="dynamic-bands-container" class="bands-container"></div>
+
+      <!-- Warning if Low Confidence -->
+      <div id="ambiguity-warning" class="warning-box hidden"></div>
+
+      <!-- Commercial / Intervention Teaser -->
+      <div class="intervention-teaser">
+        <p class="section-label">O BLOQUEIO IDENTIFICADO</p>
+        <p id="preview-reading" class="preview-reading"></p>
+        
+        <p class="section-label mt-4">PRIMEIRA ITERAÇÃO MECÂNICA</p>
+        <div class="tactical-box">
+          <p id="preview-priority" class="priority-label"></p>
+          <p id="preview-action" class="action-text"></p>
+        </div>
+      </div>
+
+      <button id="paywall-btn" class="primary-btn mt-6">Simular Barreira Comercial (Comprar Mapa)</button>
+    </div>
+  </section>
+
+  <script src="/app.js"></script>
+</body>
+</html>
