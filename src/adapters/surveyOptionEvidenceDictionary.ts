@@ -17,7 +17,14 @@ export interface EvidenceMappingParams {
 // Neste momento, reflete os 15 núcleos ontológicos e cobre blocos de simulação.
 // =========================================================================
 export const SurveyOptionDictionary: Record<string, EvidenceMappingParams> = {
-  // --- BASE A (NÚCLEOS DE SOFRIMENTO) ---
+  // --- BASE A (NÚCLEOS DE SOFRIMENTO ANCORADOS NO REAL) ---
+  'opt_A1_dinheiro': { block: 'superficial', signal_A: { id: 'sofrimento_incerteza', weight: 1.0, polarity: 'for' }},
+  'opt_A1_casa': { block: 'superficial', signal_A: { id: 'medo', weight: 1.0, polarity: 'for' }},
+  'opt_A1_relacionamento': { block: 'superficial', signal_A: { id: 'relacoes_dificeis', weight: 1.0, polarity: 'for' }},
+  'opt_A1_trabalho': { block: 'superficial', signal_A: { id: 'falta_sentido', weight: 1.0, polarity: 'for' }},
+  'opt_A1_adiada': { block: 'superficial', signal_A: { id: 'conflitos_internos', weight: 1.0, polarity: 'for' }},
+  
+  // Opções Antigas Legacy (para não quebrar testes)
   'opt_A1_fuga': { block: 'superficial', signal_A: { id: 'medo', weight: 1.0, polarity: 'for' }},
   'opt_A2_adiar': { block: 'superficial', signal_A: { id: 'procrastinacao', weight: 0.8, polarity: 'for' }},
   'opt_A3_vergonha': { block: 'superficial', signal_A: { id: 'baixa_autoestima', weight: 1.2, polarity: 'for' }},

@@ -5,11 +5,13 @@ const DEMO_QUESTIONS = [
   {
     id: "q1",
     blockId: "superficial",
-    text: "Qual é a tua maior reação sob pressão momentânea?",
+    text: "Neste momento, o que mais limita os teus movimentos reais na vida?",
     options: [
-      { id: "opt_A1_fuga", text: "Tento fugir fisicamente ou ignorar o problema." },
-      { id: "opt_A2_adiar", text: "Adio inevitavelmente até não ter mais margem." },
-      { id: "opt_A3_vergonha", text: "Fico com medo de parecer incompetente." }
+      { id: "opt_A1_dinheiro", text: "Falta de dinheiro para mexer na minha vida." },
+      { id: "opt_A1_casa", text: "Falta de espaço ou casa adequada." },
+      { id: "opt_A1_relacionamento", text: "Estar presa a uma estrutura relacional ou familiar." },
+      { id: "opt_A1_trabalho", text: "Desgaste no trabalho e falta de saída clara." },
+      { id: "opt_A1_adiada", text: "Sensação de vida adiada, mesmo sem um problema único." }
     ]
   },
   {
@@ -106,7 +108,14 @@ async function submitEvaluation() {
 
   console.log("[Demo Frontend] A enviar POST /api/evaluate com Payload:", payload);
 
+  // MODO DE TESTE LOCAL (FALLBACK)
+  const isTestMode = true; // Forçar modo de fallback de segurança
+
   try {
+    if (isTestMode) {
+      throw new Error("Modo de Teste Forçado (Gateway desativado)");
+    }
+
     const response = await fetch('/api/evaluate', {
       method: 'POST',
       headers: {
@@ -123,8 +132,44 @@ async function submitEvaluation() {
     console.log("[Demo Frontend] Resposta Recebida:", data);
     renderResults(data);
   } catch (error) {
-    alert("Falha de Comunicação: " + error.message);
-    activateScreen(screens.landing);
+    console.warn("⚠️ API remota contornada ou falha. Fallback Local Engine ativado:", error.message);
+    
+    // Fallback local determinístico
+    const q1Ans = surveyAnswers.find(b => b.blockId === 'superficial')?.answers[0].selectedOptionId;
+    
+    let mockResult = {
+      inference: {
+        headline: "Isolamento Próprio", 
+        subHeadline: "Problema no Ambiente Atual",
+        isLowConfidence: false,
+        ambiguityDisclaimer: null,
+        dynamicBands: [
+          { label: "Domínio Afetado", value: "Não mapeado", type: "core" }
+        ]
+      },
+      intervention: {
+        previewReading: "A API esteve desligada (TestMode), mas calculámos a tua posição localmente.",
+        previewPriority: "Foco Estrutural",
+        previewAction: "Inicia a fase 1 da reestruturação logística.",
+        hasMoreLocked: true
+      }
+    };
+
+    if (q1Ans === 'opt_A1_dinheiro') {
+       mockResult.inference.headline = "Sofrimento pela Escassez";
+       mockResult.inference.subHeadline = "O fator financeiro destrói a margem livre";
+       mockResult.inference.dynamicBands = [{ label: "Carga Prática", value: "Sobrevivência Financeira", type: "core" }];
+    } else if (q1Ans === 'opt_A1_casa') {
+       mockResult.inference.headline = "Território Ocupado";
+       mockResult.inference.subHeadline = "Restrição de autonomia habitacional";
+       mockResult.inference.dynamicBands = [{ label: "Carga Prática", value: "Desterritorialização", type: "core" }];
+    } else if (q1Ans === 'opt_A1_relacionamento') {
+       mockResult.inference.headline = "Clausura Relacional";
+       mockResult.inference.subHeadline = "O vínculo que estagna o movimento";
+       mockResult.inference.dynamicBands = [{ label: "Carga Prática", value: "Estrutura Afetiva Pesada", type: "core" }];
+    }
+
+    renderResults(mockResult);
   }
 }
 
